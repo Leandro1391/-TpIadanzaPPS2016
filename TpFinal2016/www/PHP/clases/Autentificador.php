@@ -28,7 +28,7 @@
 		"correo"=>$user->correo,
 		"tipo"=>$user->tipo);
 		$token=Firebase\JWT\JWT::encode($token, "LOL123");
-		$array["TokenLeandro"]=$token;
+		$array["TokenLeandroPPS2016"]=$token;
 		echo json_encode($array);
 	}
 	else

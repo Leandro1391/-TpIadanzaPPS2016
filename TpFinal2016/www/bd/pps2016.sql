@@ -42,10 +42,10 @@ CREATE TABLE IF NOT EXISTS `misproductos` (
 --
 
 INSERT INTO `misproductos` (`id`, `nombre`, `local`, `localidad` , `direccion`, `precio`, `codbar`, `foto`) VALUES
-(1, 'cuaderno Ledesma', 'Jumbo', 'Quilmes', 'Av Calchaquí 3950', 90.55, '7791762453090', ''),
-(2, 'pintura verde inglés','Sagitario', 'Quilmes', 'José Craviotto 3693', 110.88, '7792952016972', ''),
-(3, '', 'Quilmes', 'Av Calchaquí 3950', '', 'si', 'si', 'si', 'si', 100, '10/10/2016'),
-(4, 'cuaderno Ledesma Essential', 'Walmart','Avellaneda', 'Carlos Gardel 3900', 80.99, '7791762559099', '');
+(1, 'cuaderno Ledesma', 'Jumbo', 'Quilmes', 'Av Calchaquí 3950', 90.55, '7791762453090', 'carpeta01.jpg'),
+(2, 'pintura verde inglés','Sagitario', 'Quilmes', 'José Craviotto 3693', 110.88, '7792952016972', 'pintura01.jpg'),
+(3, 'lavandina ayudín','Walmart', 'Quilmes', 'Av Calchaquí 700', 10.45, '7793253001353', 'lavandina01.jpg'),
+(4, 'cuaderno Ledesma Essential', 'Walmart','Avellaneda', 'Carlos Gardel 3900', 80.99, '7791762559099', 'carpeta02.jpg');
 
 -- --------------------------------------------------------
 
@@ -67,10 +67,10 @@ CREATE TABLE IF NOT EXISTS `misusuarios` (
 --
 
 INSERT INTO `misusuarios` (`id`, `correo`, `nombre`, `clave`, `tipo`,`foto`) VALUES
-(1, 'user@user.com', 'roger', '123', 'usuario','333333.jpg'),
+(1, 'user@user.com', 'roger', '123', 'empleado','333333.jpg'),
 (2, 'admin@admin.com', 'admin', '321', 'administrador', 'pordefecto.png'),
 (4, 'cliente@cliente.com', 'julia', '987', 'cliente',  '888888.jpg'),
-(5, 'fox@fox.com', 'michael', 'abcd', 'usuario','444444.jpg'),
+(5, 'fox@fox.com', 'michael', 'abcd', 'empleado','444444.jpg'),
 (6, 'jobs@jobs.com', 'steve', '987', 'cliente','111111.jpg'),
 (7, 'bulzara@bulzara.com', 'freddy', 'qwer', 'cliente', '999999.jpg'),
 (8, 'cruise@cruise.com', 'tom', '987', 'cliente', '777777.jpg');

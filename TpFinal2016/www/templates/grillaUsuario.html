@@ -1,0 +1,83 @@
+  <ion-header-bar class="bar-stable">
+        <h1 class="title">Service Provider Details</h1>
+    </ion-header-bar>
+    <ion-content>
+        <div class="row header">
+          <!-- <div class="col">Foto </div> -->
+          <div class="col">Nombre</div>
+          <div class="col">Tipo</div>
+          <div class="col">BORRAR</div>
+          <div class="col">MODIFICAR</div>
+        </div>
+        <div class="row" ng-repeat="usuario in ListadoUsuarios | filter:mifiltro as resultado">
+          <!-- <div class="col"><img  class='fotoGrilla' ng-src="imagenes/{{usuario.foto}}" ></div> -->
+          <div class="col">{{usuario.nombre}}</div>
+          <div class="col">{{usuario.tipo}}</div>
+
+          <div class="col"><button class="button button-small button-assertive" ng-click="Borrar(usuario)">
+  			Borrar
+			</button></div>
+
+			 <div class="col"><button class="button button-small button-energized" ng-click="Borrar(usuario)">
+  			Modificar
+			</button></div>
+
+          <!-- <div class="col"><button class="button" ng-click="ctrl.add($index)">Add</button></div> -->
+        </div>
+    </ion-content>
+
+  <!-- <div class="container">
+	  	<div class="page-header">
+	  		<center><h1>{{DatoTest}}</h1> </center>     
+	  	</div>	           
+	  	<div class="CajaInicio animated pulse">
+	  		<h1>Listado de usuarios</h1>
+
+	  		 <input type="search" placeholder="Buscar Usuario..." ng-model="mifiltro" class="buscar"></input>
+	  		<table class='table table-hover table-responsive' id="listaUsuarios">
+	  			<thead>
+	  				<tr>
+
+						<th>  Correo     </th>
+						<th>  Nombre     </th>
+						<th>  Clave     </th>
+						<th>  Tipo       </th>
+	  					<th>  Foto   </th>				
+						<th>  BORRAR     </th>
+	  					<th>  MODIFICAR     </th>
+
+	  				</tr> 
+	  			</thead>
+	  			<tr ng-repeat="usuario in ListadoUsuarios | filter:mifiltro as resultado">
+
+
+
+	  				<td>{{usuario.correo}}</td>
+	  				<td>{{usuario.nombre}}</td>
+	  				<td>{{usuario.clave}}</td>
+	  				<td>{{usuario.tipo}}</td>
+
+
+	  				<td><img  class='fotoGrilla' ng-src="imagenes/{{usuario.foto}}" ></td>
+
+	  				<td><button class='btn btn-danger' name='Borrar' ng-click="Borrar(usuario)">   <span class='glyphicon glyphicon-remove-circle'>&nbsp;</span>Borrar</button></td>
+
+	  				<td><button class='btn btn-warning' name='Modificar' ui-sref="modificar({id:usuario.id, correo:usuario.correo, nombre:usuario.nombre , clave:usuario.clave, tipo:usuario.tipo, foto:usuario.foto})"><span class='glyphicon glyphicon-edit'>&nbsp;</span>Modificar</button></td>
+
+	  			</tr>
+
+
+	  			<tr ng-if="resultado.length == 0">
+
+	  				<td></td>							
+	  				<td>No existen usuarios con esos datos..</td>
+	  				<td></td>
+	  				<td></td>
+	  				<td></td>										
+	  				<td></td>
+
+	  			</tr>
+	  		</table>
+	  	</div>				
+	  </div>
+	</div> -->

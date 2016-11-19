@@ -1,1 +1,35 @@
 /* Empty. Add your own CSS if you like */
+
+.pull-right{
+  float: right;
+}
+.button-halfwidth{
+  width: 49%;
+  background-color: #D7EAFA;
+}
+.button-fullwidth{
+  width: 100%;
+  background-color: #D7EAFA;
+}
+.bar-leandro
+{
+    background-color: #D7EAFA;
+
+}
+
+.header .col {
+  border-top: solid 1px grey;
+  background-color:lightblue;
+}
+
+.col:first-child {
+  border-left: solid 1px grey;
+}
+
+.col:last-child {
+  border-right: solid 1px grey;
+}
+
+.row:last-child .col {
+  border-bottom: solid 1px grey;
+}

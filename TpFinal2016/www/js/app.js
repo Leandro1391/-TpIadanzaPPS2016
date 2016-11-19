@@ -4,7 +4,7 @@
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
 // 'starter.controllers' is found in controllers.js
-angular.module('starter', ['ionic', 'starter.controllers'])
+angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'satellizer'])
 
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
@@ -22,8 +22,58 @@ angular.module('starter', ['ionic', 'starter.controllers'])
   });
 })
 
-.config(function($stateProvider, $urlRouterProvider) {
+.config(function($stateProvider, $urlRouterProvider, $authProvider) {
+
+  $authProvider.loginUrl = 'TpLab4Iadanza/PHP/clases/Autentificador.php';
+  $authProvider.signupUrl = 'TpLab4Iadanza/PHP/clases/Autentificador.php';
+  $authProvider.tokenName = 'TokenLeandroPPS2016';
+  $authProvider.tokenPrefix = 'TLPPS2016';
+  $authProvider.authHeader = 'data';
+
   $stateProvider
+
+  .state('raiz', {
+                url : '/raiz',
+                templateUrl : 'templates/raiz.html',
+                controller : 'RootPageController'
+  })
+
+  .state('Menu', {
+     url : '/Menu',
+        templateUrl : 'templates/menuAbst.html',
+        abstract : true
+    })
+
+
+  .state('Menu.inicio', {
+      url: '/inicio',
+      views: {
+          'contenido': {
+              templateUrl: 'templates/MenuInicio.html'
+          }
+      }
+  })
+
+
+  .state('Menu.grillaUsuario', {
+        url: '/grillaUsuario',
+        views: {
+            'contenido': {
+             templateUrl: 'templates/grillaUsuario.html',
+             controller: 'controlGrillaUsuario'
+            }
+        }
+    })
+
+  // .state('Menu.dos', {
+  //               url: '/dos',
+  //               views: {
+  //                 'contenido': {
+  //                  templateUrl: 'MenuDos.html',
+  //                  controller: 'ControladorToast'
+  //               }
+  //         }
+  //     })
 
     .state('app', {
     url: '/app',
@@ -69,5 +119,5 @@ angular.module('starter', ['ionic', 'starter.controllers'])
     }
   });
   // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/app/playlists');
+  $urlRouterProvider.otherwise('/raiz');
 });
