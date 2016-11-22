@@ -24,8 +24,8 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'satelli
 
 .config(function($stateProvider, $urlRouterProvider, $authProvider) {
 
-  $authProvider.loginUrl = 'TpLab4Iadanza/PHP/clases/Autentificador.php';
-  $authProvider.signupUrl = 'TpLab4Iadanza/PHP/clases/Autentificador.php';
+  $authProvider.loginUrl = 'TpIadanzaPPS2016/TpFinal2016/www/PHP/clases/Autentificador.php';
+  $authProvider.signupUrl = 'TpIadanzaPPS2016/TpFinal2016/www/PHP/clases/Autentificador.php';
   $authProvider.tokenName = 'TokenLeandroPPS2016';
   $authProvider.tokenPrefix = 'TLPPS2016';
   $authProvider.authHeader = 'data';
@@ -36,6 +36,12 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'satelli
                 url : '/raiz',
                 templateUrl : 'templates/raiz.html',
                 controller : 'RootPageController'
+  })
+
+  .state('login', {
+        url: '/login',
+        templateUrl: 'templates/login.html', 
+        controller: 'controlLogin'
   })
 
   .state('Menu', {
@@ -61,6 +67,16 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'satelli
             'contenido': {
              templateUrl: 'templates/grillaUsuario.html',
              controller: 'controlGrillaUsuario'
+            }
+        }
+    })
+
+  .state('Menu.grillaProducto', {
+        url: '/grillaUsuario',
+        views: {
+            'contenido': {
+             templateUrl: 'templates/grillaProducto.html',
+             controller: 'controlGrillaProducto'
             }
         }
     })
@@ -119,5 +135,5 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'satelli
     }
   });
   // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/raiz');
+  $urlRouterProvider.otherwise('/login');
 });

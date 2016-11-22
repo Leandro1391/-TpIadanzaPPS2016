@@ -52,7 +52,76 @@ angular.module('starter.controllers', ['ngCordova'])
   ];
 })
 
-.controller('RootPageController', function($scope, $ionicSideMenuDelegate) {
+.controller('controlLogin', function($scope, $http, $auth, $state, $ionicPopup) {
+  
+  $scope.DatoTest="INICIAR SESIÓN";
+
+  $scope.cargarCliente = function()
+  {
+    // $scope.correo = "cliente@cliente.com";
+    $scope.nombre = "julia";
+    $scope.clave = "987";
+  };  
+  $scope.cargarEmpleado = function()
+  {
+    // $scope.correo = "user@user.com";
+    $scope.nombre = "roger";
+    $scope.clave = "123";
+  };  
+  $scope.cargarAdmin = function()
+  {
+    // $scope.correo = "admin@admin.com";
+    $scope.nombre = "admin";
+    $scope.clave = "321";
+  };
+
+
+  if($auth.isAuthenticated())
+  {
+    $state.go("raiz");
+  }
+  else
+  {
+    
+    $scope.Login=function(user, pass)
+    {
+      $scope.nombre = user;
+      $scope.clave = pass;
+      console.log("nombre: "+ $scope.nombre);
+      console.log("clave: "+ $scope.clave);
+      $auth.login({nombre:$scope.nombre, clave:$scope.clave})
+      .then(function(respuesta)
+      {
+        console.log(respuesta);
+        if($auth.isAuthenticated())
+        {
+          console.info($auth.isAuthenticated(), $auth.getPayload());
+          $state.go("raiz");
+        }
+        else
+        {
+          $ionicPopup.alert({
+            title: 'Error al ingresar los datos',
+            template: 'No se encontró el usuario. Verifique los datos.'
+             });
+        }
+      });
+    };
+    $scope.CargarFormulario=function()
+    {
+      $state.go("altaUser");
+    };
+  }
+})
+
+
+
+.controller('RootPageController', function($scope, $ionicSideMenuDelegate, $auth, $state) {
+
+    if(!$auth.isAuthenticated()){
+        $state.go("login");
+    }
+
     })
 
 .controller('NavController', function($scope, $ionicSideMenuDelegate) {
@@ -61,8 +130,70 @@ angular.module('starter.controllers', ['ngCordova'])
       };
     })
 
+.controller('controlGrillaProducto', function($scope, $http, $state, $auth, FactoryProducto) {
 
-.controller('controlGrillaUsuario', function($scope, $http, $location, $state, FactoryUsuario) {
+  if($auth.isAuthenticated())
+  {
+    $scope.DatoTest="**grilla**";
+
+
+    $scope.esVisible={
+        admin:false,
+        empleado:false,
+        cliente:false
+        };
+
+
+    if($auth.getPayload().tipo=="administrador")
+      $scope.esVisible.admin=true;
+    if($auth.getPayload().tipo=="empleado")
+      $scope.esVisible.empleado=true;
+    if($auth.getPayload().tipo=="cliente")
+      $scope.esVisible.cliente=true;
+
+    //FactoryProducto.mostrarapellido();
+
+    FactoryProducto.mostrarNombre("otro").then(function(respuesta){
+
+     $scope.ListadoProductos=respuesta;
+ 
+   });
+    //$scope.Listadopersonas =factory.fu();
+    //$http.get('PHP/nexo.php', { params: {accion :"traer"}})
+      $scope.Borrar=function(id){
+      // console.log("borrar"+id);
+       $http.delete('Datos/productos/'+id)
+      .then(function(respuesta) {      
+             //aca se ejetuca si retorno sin errores        
+             console.log(respuesta.data);
+
+            $http.get('Datos/productos')
+            .then(function(respuesta) {       
+
+                   $scope.ListadoProductos = respuesta.data;
+                   console.log(respuesta.data);
+
+              },function errorCallback(response) {
+                   $scope.ListadoProductos= [];
+                  console.log( response);
+
+      });
+
+        },function errorCallback(response) {        
+            //aca se ejecuta cuando hay errores
+            console.log( response);           
+        });
+
+
+  }
+  }
+  else
+    $state.go("login");
+
+})
+
+
+.controller('controlGrillaUsuario', function($scope, $http, $location, $state, FactoryUsuario, $ionicActionSheet) {
     $scope.DatoTest="GRILLA USUARIO";
 
 
@@ -78,6 +209,32 @@ angular.module('starter.controllers', ['ngCordova'])
 
      
     });
+
+    $scope.showActionsheet = function(usuario) {
+
+      console.log("usuario a realizar: "+ usuario.id);
+    
+    $ionicActionSheet.show({
+      titleText: 'Opciones de grilla',
+      buttons: [
+        { text: '<i class="icon ion-share"></i> Modificar' },
+        // { text: '<i class="icon ion-arrow-move"></i> Move' },
+      ],
+      destructiveText: 'Borrar',
+      cancelText: 'Cancel',
+      cancel: function() {
+        console.log('CANCELLED');
+      },
+      buttonClicked: function(index) {
+        console.log('BUTTON CLICKED', index);
+        return true;
+      },
+      destructiveButtonClicked: function() {
+        console.log('DESTRUCT');
+        return true;
+      }
+    });
+  };
 
 
       // $http.get('Datos/usuarios')
@@ -148,6 +305,21 @@ angular.module('starter.controllers', ['ngCordova'])
 
 })
 
+.service('ServicioProducto', function($http){ 
+  var listado;
+
+  this.retornarProductos = function(){
+
+       return $http.get('Datos/productos')
+                    .then(function(respuesta) 
+                    {     
+                      console.log(respuesta.data);
+                      return respuesta.data;
+                    });
+                  };
+})
+
+
 .service('ServicioUsuario', function($http){
   var listado;
 
@@ -160,8 +332,24 @@ angular.module('starter.controllers', ['ngCordova'])
                       return respuesta.data;
                     });
                   };
+})
 
-                  //return listado;
+.factory('FactoryProducto', function(ServicioProducto){
+  var producto = {
+   
+    mostrarNombre:function(dato){
+      
+     return ServicioProducto.retornarProductos().then(function(respuesta){
+       
+        return respuesta;
+      });
+    },
+    // mostrarapellido:function(){
+    //   console.log("soy otra funcion de factory");
+    // }
+}
+  return producto;
+
 })
 
 .controller('PlaylistCtrl', function($scope, $stateParams) {

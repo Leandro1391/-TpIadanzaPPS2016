@@ -11,7 +11,7 @@
 	$usuarios=Usuario::TraerTodosLosUsuarios();
 	foreach($usuarios as $usuario)
 	{
-		if($usuario->correo == $respuesta->correo && $usuario->nombre == $respuesta->nombre && $usuario->clave==$respuesta->clave)
+		if($usuario->nombre == $respuesta->nombre && $usuario->clave==$respuesta->clave)
 		{
 			$correcto=true;
 			$user=$usuario;

@@ -1,0 +1,27 @@
+<ion-header-bar class="bar-stable">
+        <h1 class="title">Service Provider Details</h1>
+    </ion-header-bar>
+    <ion-content>
+        <div class="row header">
+          <!-- <div class="col">Foto </div> -->
+          <div class="col">Nombre</div>
+          <div class="col">Tipo</div>
+          <div class="col">BORRAR</div>
+          <div class="col">MODIFICAR</div>
+        </div>
+        <div class="row" ng-repeat="usuario in ListadoUsuarios | filter:mifiltro as resultado">
+          <!-- <div class="col"><img  class='fotoGrilla' ng-src="imagenes/{{usuario.foto}}" ></div> -->
+          <div class="col">{{usuario.nombre}}</div>
+          <div class="col">{{usuario.tipo}}</div>
+
+          <div class="col"><button class="button button-small button-assertive" ng-click="Borrar(usuario)">
+  			Borrar
+			</button></div>
+
+			 <div class="col"><button class="button button-small button-energized" ng-click="Borrar(usuario)">
+  			Modificar
+			</button></div>
+
+          <!-- <div class="col"><button class="button" ng-click="ctrl.add($index)">Add</button></div> -->
+        </div>
+    </ion-content>
