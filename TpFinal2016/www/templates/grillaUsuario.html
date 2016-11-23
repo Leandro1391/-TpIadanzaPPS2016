@@ -1,4 +1,5 @@
   <ion-view title="Grilla Usuarios">
+  
     <ion-content>
         <div class="row header">
           <div class="col">Foto </div>
@@ -7,7 +8,7 @@
           <div class="col">Opciones</div>
           <!-- <div class="col">MODIFICAR</div> -->
         </div>
-        <input type="search" placeholder="  Buscar Usuario..." ng-model="mifiltro"></input>
+        <input type="search" placeholder="  Buscar Usuario" ng-model="mifiltro"></input>
         <div class="row" ng-repeat="usuario in ListadoUsuarios | filter:mifiltro as resultado">
           <div class="col"><img class='fotoGrilla' ng-src="imagenes/{{usuario.foto}}"></div>
           <div class="col">{{usuario.nombre}}</div>

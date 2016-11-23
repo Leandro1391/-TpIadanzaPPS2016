@@ -3253,6 +3253,7 @@ input[type="search"] {
   /* 2 */
   -moz-box-sizing: content-box;
   box-sizing: content-box;
+  width: 100%;
   -webkit-appearance: textfield;
   /* 1 */ }
 

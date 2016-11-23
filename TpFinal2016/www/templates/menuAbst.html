@@ -14,10 +14,13 @@
         </ion-header-bar>
         <ion-content has-header="true">
           <ul class="list">
-            <a ui-sref="Menu.grillaUsuario" class="item" ng-click="toggleLeft()">Usuarios</a>
+            <a ui-sref="Menu.grillaUsuario" class="item" ng-click="toggleLeft()" ng-if="esVisible.admin">Usuarios</a>
+            <!-- <a ui-sref="Menu.grillaProducto" class="item" ng-click="toggleLeft()">Productos</a> -->
             <a ui-sref="Menu.grillaProducto" class="item" ng-click="toggleLeft()">Productos</a>
-            <a ui-sref="root" class="item" ng-click="toggleLeft()">Volver</a>
-            <a class="item" ng-click="toggleLeft()">Cerrar sesión</a>
+            <a ui-sref="Menu.altaUsuario" class="item" ng-click="toggleLeft()" ng-if="esVisible.admin">Alta Usuario</a>
+            <a ui-sref="Menu.altaProducto" class="item" ng-click="toggleLeft()" ng-if="esVisible.admin || esVisible.empleado">Alta Producto</a>
+            <a ui-sref="raiz" class="item" ng-click="toggleLeft()">Volver</a>
+            <a class="item" ng-click="Logout()" onclick="window.location.reload(false)">Cerrar sesión</a>
           </ul>
         </ion-content>
 

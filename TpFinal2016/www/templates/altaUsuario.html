@@ -1,0 +1,51 @@
+<ion-view title="{{DatoTest}}">
+
+	<ion-content>
+		
+		<div class="list">
+  			<label class="item item-input">
+    			<input type="text" placeholder="Correo Electrónico" ng-model="usuario.correo" >
+  			</label>
+		  	<label class="item item-input">
+		    	<input type="text" placeholder="Nombre" ng-model="usuario.nombre">
+		  	</label>
+		  	<label class="item item-input">
+		    	<input type="password" placeholder="contraseña" ng-model="usuario.clave"></input>
+		  	</label>
+		  	<label class="item item-divider">
+			    <span class="input-label">Elegir tipo de usuario</span>
+			</label>
+		  	<ion-list> 
+			  <ion-radio ng-model="usuario.tipo" ng-value="'cliente'">Cliente</ion-radio>
+			  <ion-radio ng-model="usuario.tipo" ng-value="'empleado'">Empleado</ion-radio>
+			  <ion-radio ng-model="usuario.tipo" ng-value="'administrador'">Administrador</ion-radio>
+			</ion-list>
+
+			<label class="item item-divider">
+			    <span class="input-label">Foto</span>
+			</label>
+
+			<div class="item item-avatar" ng-repeat="item in uploader.queue">
+				<img ng-src="imagenes/pordefecto.png" width="100%" />
+				<button  ng-disabled="true" class="button button-icon icon ion-camera" ng-click="upload()"></button>
+		  	</div>
+
+		  	<button class="button button-block button-positive" type="submit">Guardar</button>
+
+		    	<!-- <div  ng-repeat="item in uploader.queue" ng-bind="item.file.name" ng-thumb="{ file: item._file, height: 50 }">Archivo</div> -->
+			<!-- <div ng-show="uploader.isHTML5" g-bind="item.file.name" ng-thumb="{ file: item._file, height: 50 }">Archivo</div> -->
+
+			 <!-- <div class="item item-avatar"  ng-repeat="image in images|filter:{lenguaje:lenguajeFiltro}" >
+			    <img ng-src="data:image/jpeg;base64,{{image.image}}" width="100%" />
+			    <h1>{{image.titulo}}</h1>
+			    <h3>{{image.lenguaje}}</h3>	
+			    <p>{{image.fecha| date:'medium'}}</p>
+			  </div> -->
+
+		</div>
+
+
+	</ion-content>
+	
+
+</ion-view>

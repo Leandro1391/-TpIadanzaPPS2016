@@ -52,6 +52,11 @@ angular.module('starter.controllers', ['ngCordova'])
   ];
 })
 
+
+//////////////////////////////////////////////////////
+///////////////////CONTROLLER DEL MENÚ///////////////
+/////////////////////////////////////////////////////
+
 .controller('controlLogin', function($scope, $http, $auth, $state, $ionicPopup) {
   
   $scope.DatoTest="INICIAR SESIÓN";
@@ -115,34 +120,22 @@ angular.module('starter.controllers', ['ngCordova'])
 })
 
 
-
 .controller('RootPageController', function($scope, $ionicSideMenuDelegate, $auth, $state) {
 
     if(!$auth.isAuthenticated()){
         $state.go("login");
     }
 
-    })
+})
 
-.controller('NavController', function($scope, $ionicSideMenuDelegate) {
-      $scope.toggleLeft = function() {
-        $ionicSideMenuDelegate.toggleLeft();
-      };
-    })
-
-.controller('controlGrillaProducto', function($scope, $http, $state, $auth, FactoryProducto) {
-
-  if($auth.isAuthenticated())
-  {
-    $scope.DatoTest="**grilla**";
+.controller('NavController', function($scope, $ionicSideMenuDelegate, $auth, $state) {
 
 
     $scope.esVisible={
         admin:false,
         empleado:false,
         cliente:false
-        };
-
+    };
 
     if($auth.getPayload().tipo=="administrador")
       $scope.esVisible.admin=true;
@@ -150,6 +143,29 @@ angular.module('starter.controllers', ['ngCordova'])
       $scope.esVisible.empleado=true;
     if($auth.getPayload().tipo=="cliente")
       $scope.esVisible.cliente=true;
+
+    $scope.Logout=function()
+    {
+      console.log("estoy adentro del logout");
+      $auth.logout()
+      .then(function()
+      {
+        $state.go("login");
+        $route.reload();
+      });
+    };
+
+      $scope.toggleLeft = function() {
+        $ionicSideMenuDelegate.toggleLeft();
+      };
+ })
+
+.controller('controlGrillaProducto', function($scope, $http, $state, $auth, FactoryProducto) {
+
+  if($auth.isAuthenticated())
+  {
+    $scope.DatoTest="Grilla Producto";
+
 
     //FactoryProducto.mostrarapellido();
 
@@ -192,9 +208,12 @@ angular.module('starter.controllers', ['ngCordova'])
 
 })
 
+///////////////////////////////////////////////////////////
+/////////CONTROLLER DE GRILLA USUARIO//////////////////////
+//////////////////////////////////////////////////////////
 
-.controller('controlGrillaUsuario', function($scope, $http, $location, $state, FactoryUsuario, $ionicActionSheet) {
-    $scope.DatoTest="GRILLA USUARIO";
+.controller('controlGrillaUsuario', function($scope, $http, $location, $state, FactoryUsuario, $ionicActionSheet, $ionicPopup) {
+    $scope.DatoTest="Grilla Usuario";
 
 
     $scope.guardar = function(usuario){
@@ -210,14 +229,15 @@ angular.module('starter.controllers', ['ngCordova'])
      
     });
 
+
+
     $scope.showActionsheet = function(usuario) {
 
-      console.log("usuario a realizar: "+ usuario.id);
     
     $ionicActionSheet.show({
-      titleText: 'Opciones de grilla',
+      titleText: 'Opciones de Grilla Usuario',
       buttons: [
-        { text: '<i class="icon ion-share"></i> Modificar' },
+        { text: '<i class="icon ion-edit"></i> Modificar' },
         // { text: '<i class="icon ion-arrow-move"></i> Move' },
       ],
       destructiveText: 'Borrar',
@@ -231,6 +251,46 @@ angular.module('starter.controllers', ['ngCordova'])
       },
       destructiveButtonClicked: function() {
         console.log('DESTRUCT');
+        console.log("usuario a eliminar: "+ usuario.id);
+
+
+           // A confirm dialog
+       // $scope.showConfirm = function() {
+         var confirmPopup = $ionicPopup.confirm({
+           title: 'Eliminar Usuario: '+ usuario.nombre,
+           template: '¿Está seguro que desea eliminar al usuario '+ usuario.nombre+'?'
+         });
+
+         confirmPopup.then(function(res) {
+           if(res) {
+               $http.post("PHP/nexo.php",{datos:{accion :"borrar",usuario:usuario}},{headers: {'Content-Type': 'application/x-www-form-urlencoded'}})
+             .then(function(respuesta) {       
+                     //aca se ejetuca si retorno sin errores        
+                     console.log(respuesta.data);
+                        $http.get('PHP/nexo.php', { params: {accion :"traer"}})
+                        .then(function(respuesta) {       
+
+                               $scope.ListadoUsuarios = respuesta.data.listado;
+                               console.log(respuesta.data);
+
+                          },function errorCallback(response) {
+                               $scope.ListadoUsuarios= [];
+                              console.log( response);
+                              
+                         });
+
+              },function errorCallback(response) {        
+                  //aca se ejecuta cuando hay errores
+                  console.log( response);           
+          });
+             console.log('You are sure');
+           } else {
+             console.log('You are not sure');
+           }
+         });
+       // };
+
+       
         return true;
       }
     });
@@ -259,33 +319,67 @@ angular.module('starter.controllers', ['ngCordova'])
       //        $scope.ListadoUsuarios= [];
       //       console.log( response);     
       //  });
+})
 
-      $scope.Borrar=function(usuario){
-        if(confirm("¿Desea eliminar el usuario seleccionado?"))
-        //console.log("borrar"+usuario);
-        $http.post("PHP/nexo.php",{datos:{accion :"borrar",usuario:usuario}},{headers: {'Content-Type': 'application/x-www-form-urlencoded'}})
-             .then(function(respuesta) {       
-                     //aca se ejetuca si retorno sin errores        
-                     console.log(respuesta.data);
-                        $http.get('PHP/nexo.php', { params: {accion :"traer"}})
-                        .then(function(respuesta) {       
 
-                               $scope.ListadoUsuarios = respuesta.data.listado;
-                               console.log(respuesta.data);
+.controller('controlAltaUsuario', function($scope, $http ,$state, FileUploader, cargadoDeFoto, $auth) {
 
-                          },function errorCallback(response) {
-                               $scope.ListadoUsuarios= [];
-                              console.log( response);
-                              
-                         });
+  if($auth.isAuthenticated())
+  {
+        $scope.DatoTest="Alta Usuario";
 
-              },function errorCallback(response) {        
-                  //aca se ejecuta cuando hay errores
-                  console.log( response);           
-          });
-      }// $scope.Borrar
+        $scope.uploader = new FileUploader({url: 'PHP/nexo.php'});
+        $scope.uploader.queueLimit = 1;
+
+      //inicio las variables
+        $scope.usuario={};
+        $scope.usuario.correo= "pepe@pepe.com" ;
+        $scope.usuario.nombre= "pepe" ;
+        $scope.usuario.clave= "9876" ;
+        $scope.usuario.tipo= "empleado" ;
+        $scope.usuario.foto="pordefecto.png";
+        
+        cargadoDeFoto.CargarFoto($scope.usuario.foto,$scope.uploader);
+       
+
+        $scope.Guardar=function(){
+        console.log($scope.uploader.queue);
+        //debugger;
+        if($scope.uploader.queue[0].file.name!='pordefecto.png')
+        {
+          var nombreFoto = $scope.uploader.queue[0]._file.name;
+          $scope.usuario.foto=nombreFoto;
+        }
+        $scope.uploader.uploadAll();
+          console.log("usuario a guardar:");
+          console.log($scope.usuario);
+        }
+
+         $scope.uploader.onSuccessItem=function(item, response, status, headers)
+        {
+          //alert($scope.persona.foto);
+            $http.post('PHP/nexo.php', { datos: {accion :"insertar",usuario:$scope.usuario}})
+              .then(function(respuesta) {       
+                 //aca se ejetuca si retorno sin errores        
+               console.log(respuesta.data);
+               $state.go("grillaUsuario");
+
+            },function errorCallback(response) {        
+                //aca se ejecuta cuando hay errores
+                console.log( response);           
+              });
+          console.info("Ya guardé el archivo.", item, response, status, headers);
+        };
+        }
+  else{
+        $state.go("login");
+  }
 
 })
+
+//////////////////////////////////////////////////
+//////////////////FACTORY////////////////////////
+////////////////////////////////////////////////
 
 .factory('FactoryUsuario', function(ServicioUsuario){
   var persona = {
@@ -317,6 +411,25 @@ angular.module('starter.controllers', ['ngCordova'])
                       return respuesta.data;
                     });
                   };
+})
+
+
+.service('cargadoDeFoto',function($http,FileUploader){
+    this.CargarFoto=function(nombrefoto,Uploader){
+        var direccion="imagenes/"+nombrefoto;  
+        $http.get(direccion,{responseType:"blob"})
+        .then(function (respuesta){
+            console.info("datos del cargar foto",respuesta);
+            var mimetype=respuesta.data.type;
+            var archivo=new File([respuesta.data],direccion,{type:mimetype});
+            var dummy= new FileUploader.FileItem(Uploader,{});
+            dummy._file=archivo;
+            dummy.file={};
+            dummy.file= new File([respuesta.data],nombrefoto,{type:mimetype});
+
+              Uploader.queue.push(dummy);
+         });
+    }
 })
 
 

@@ -4,7 +4,7 @@
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
 // 'starter.controllers' is found in controllers.js
-angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'satellizer'])
+angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'satellizer', 'angularFileUpload', 'ui.router'])
 
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
@@ -72,7 +72,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'satelli
     })
 
   .state('Menu.grillaProducto', {
-        url: '/grillaUsuario',
+        url: '/grillaProducto',
         views: {
             'contenido': {
              templateUrl: 'templates/grillaProducto.html',
@@ -81,15 +81,15 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'satelli
         }
     })
 
-  // .state('Menu.dos', {
-  //               url: '/dos',
-  //               views: {
-  //                 'contenido': {
-  //                  templateUrl: 'MenuDos.html',
-  //                  controller: 'ControladorToast'
-  //               }
-  //         }
-  //     })
+  .state('Menu.altaUsuario', {
+        url: '/altaUsuario',
+        views: {
+            'contenido': {
+             templateUrl: 'templates/altaUsuario.html',
+             controller: 'controlAltaUsuario'
+            }
+        }
+    })
 
     .state('app', {
     url: '/app',
