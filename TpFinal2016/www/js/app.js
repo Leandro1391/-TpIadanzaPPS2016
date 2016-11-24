@@ -91,6 +91,22 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'satelli
         }
     })
 
+
+  .state('Menu.modificar', {
+     url: '/modificar/{id}?:correo:nombre:clave:tipo:foto',
+     params: {
+        id: null,
+        correo: null,
+        nombre:null,
+        clave:null,
+        tipo:null,
+        foto:null
+     },
+     views: {
+      'contenido': { templateUrl: 'templates/altaUsuario.html',controller: 'controlModificacion' },
+    }
+  })
+
     .state('app', {
     url: '/app',
     abstract: true,

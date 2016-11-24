@@ -12,6 +12,8 @@ class producto
  	public $precio;
  	public $codbar;
  	public $foto;
+ 	public $fecha;
+
 
 //--------------------------------------------------------------------------------//
 
@@ -49,6 +51,10 @@ class producto
 	{
 		return $this->foto;
 	}
+	public function GetFecha()
+	{
+		return $this->fecha;
+	}
 	
 
 	public function SetId($valor)
@@ -83,6 +89,10 @@ class producto
 	{
 		$this->foto = $valor;
 	}
+	public function SetFecha($valor)
+	{
+		$this->fecha = $valor;
+	}
 	
 	
 //--------------------------------------------------------------------------------//
@@ -100,6 +110,7 @@ class producto
 			$this->precio = $obj->precio;
 			$this->codbar = $obj->codbar;
 			$this->foto = $obj->foto;
+			$this->fecha = $obj->fecha;
 		}
 	}
 
@@ -107,7 +118,7 @@ class producto
 //--TOSTRING	
   	public function ToString()
 	{
-	  	return $this->nombre."-".$this->local."-".$this->localidad."-".$this->direccion."-".$this->precio."-".$this->codbar."-".$this->foto;
+	  	return $this->nombre."-".$this->local."-".$this->localidad."-".$this->direccion."-".$this->precio."-".$this->codbar."-".$this->foto."-".$this->fecha;
 	}
 //--------------------------------------------------------------------------------//
 
@@ -160,7 +171,7 @@ class producto
 	public static function ModificarProducto($producto)
 	{
 			$objetoAccesoDato = AccesoDatos::dameUnObjetoAcceso(); 
-			$consulta =$objetoAccesoDato->RetornarConsulta("UPDATE producto set nombre=:nombre,local=:local,localidad=:localidad,direccion=:direccion,precio=:precio,codbar=:codbar,foto=:foto WHERE id=:id");
+			$consulta =$objetoAccesoDato->RetornarConsulta("UPDATE producto set nombre=:nombre,local=:local,localidad=:localidad,direccion=:direccion,precio=:precio,codbar=:codbar,foto=:foto,fecha=:fecha WHERE id=:id");
 			$consulta->bindValue(':id',$producto->id, PDO::PARAM_INT);
 			$consulta->bindValue(':nombre',$producto->nombre, PDO::PARAM_STR);
 			$consulta->bindValue(':local',$producto->local, PDO::PARAM_STR);
@@ -169,6 +180,7 @@ class producto
 			$consulta->bindValue(':precio', $producto->precio, PDO::PARAM_STR);
 			$consulta->bindValue(':codbar', $producto->codbar, PDO::PARAM_STR);
 			$consulta->bindValue(':foto', $producto->foto, PDO::PARAM_STR);
+			$consulta->bindValue(':fecha', $producto->fecha, PDO::PARAM_STR);
 			return $consulta->execute();
 	}
 
@@ -179,7 +191,7 @@ class producto
 	public static function InsertarProducto($producto)
 	{
 		$objetoAccesoDato = AccesoDatos::dameUnObjetoAcceso(); 
-		$consulta =$objetoAccesoDato->RetornarConsulta("INSERT into producto (nombre,local,localidad,direccion,precio,codbar,foto)values(:nombre,:local,:localidad,:direccion,:precio,:codbar,:foto)");
+		$consulta =$objetoAccesoDato->RetornarConsulta("INSERT into producto (nombre,local,localidad,direccion,precio,codbar,foto,fecha)values(:nombre,:local,:localidad,:direccion,:precio,:codbar,:foto,:fecha)");
 		//$consulta =$objetoAccesoDato->RetornarConsulta("CALL Insertarlocal (:nombre,:apellido,:dni,:foto)");
 		$consulta->bindValue(':nombre',$producto->nombre, PDO::PARAM_STR);
 		$consulta->bindValue(':local',$producto->local, PDO::PARAM_STR);
@@ -188,6 +200,7 @@ class producto
 		$consulta->bindValue(':precio', $producto->precio, PDO::PARAM_STR);
 		$consulta->bindValue(':codbar', $producto->codbar, PDO::PARAM_STR);
 		$consulta->bindValue(':foto', $producto->foto, PDO::PARAM_STR);
+		$consulta->bindValue(':fecha', $producto->fecha, PDO::PARAM_STR);
 		$consulta->execute();		
 		return $objetoAccesoDato->RetornarUltimoIdInsertado();
 	

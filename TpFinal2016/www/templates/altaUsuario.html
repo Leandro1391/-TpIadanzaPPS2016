@@ -25,22 +25,21 @@
 			    <span class="input-label">Foto</span>
 			</label>
 
-			<div class="item item-avatar" ng-repeat="item in uploader.queue">
-				<img ng-src="imagenes/pordefecto.png" width="100%" />
+			<div class="col"><img class='fotoGrilla' ng-src="imagenes/{{usuario.foto}}">
+
+			<div class="col text-center">
 				<button  ng-disabled="true" class="button button-icon icon ion-camera" ng-click="upload()"></button>
+			</div>
+			</div>
+
 		  	</div>
 
-		  	<button class="button button-block button-positive" type="submit">Guardar</button>
+		  	<div class="row"><button class="button button-block button-positive" type="submit" ng-click="Guardar(usuario)">Guardar</button></div>
 
-		    	<!-- <div  ng-repeat="item in uploader.queue" ng-bind="item.file.name" ng-thumb="{ file: item._file, height: 50 }">Archivo</div> -->
-			<!-- <div ng-show="uploader.isHTML5" g-bind="item.file.name" ng-thumb="{ file: item._file, height: 50 }">Archivo</div> -->
+			<!--< div class="item item-avatar" ng-repeat="item in uploader.queue">
+				<img ng-src="imagenes/pordefecto.png" width="100%" /> -->
 
-			 <!-- <div class="item item-avatar"  ng-repeat="image in images|filter:{lenguaje:lenguajeFiltro}" >
-			    <img ng-src="data:image/jpeg;base64,{{image.image}}" width="100%" />
-			    <h1>{{image.titulo}}</h1>
-			    <h3>{{image.lenguaje}}</h3>	
-			    <p>{{image.fecha| date:'medium'}}</p>
-			  </div> -->
+		    	
 
 		</div>
 

@@ -34,18 +34,19 @@ CREATE TABLE IF NOT EXISTS `misproductos` (
   `direccion` varchar(30) COLLATE utf8_spanish2_ci NOT NULL,
   `precio` decimal(7,2) COLLATE utf8_spanish2_ci NOT NULL,
   `codbar` varchar(50) COLLATE utf8_spanish2_ci NOT NULL,
-  `foto` varchar(50) COLLATE utf8_spanish2_ci NOT NULL
+  `foto` varchar(50) COLLATE utf8_spanish2_ci NOT NULL,
+  `fecha` varchar(25) COLLATE utf8_spanish2_ci NOT NULL
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
 
 --
 -- Volcado de datos para la tabla `misproductos`
 --
 
-INSERT INTO `misproductos` (`id`, `nombre`, `local`, `localidad` , `direccion`, `precio`, `codbar`, `foto`) VALUES
-(1, 'cuaderno Ledesma', 'Jumbo', 'Quilmes', 'Av Calchaquí 3950', 90.55, '7791762453090', 'carpeta01.jpg'),
-(2, 'pintura verde inglés','Sagitario', 'Quilmes', 'José Craviotto 3693', 110.88, '7792952016972', 'pintura01.jpg'),
-(3, 'lavandina ayudín','Walmart', 'Quilmes', 'Av Calchaquí 700', 10.45, '7793253001353', 'lavandina01.jpg'),
-(4, 'cuaderno Ledesma Essential', 'Walmart','Avellaneda', 'Carlos Gardel 3900', 80.99, '7791762559099', 'carpeta02.jpg');
+INSERT INTO `misproductos` (`id`, `nombre`, `local`, `localidad` , `direccion`, `precio`, `codbar`, `foto`, `fecha`) VALUES
+(1, 'cuaderno Ledesma', 'Jumbo', 'Quilmes', 'Av Calchaquí 3950', 90.55, '7791762453090', 'carpeta01.jpg', '12/10/2016'),
+(2, 'pintura verde inglés','Sagitario', 'Quilmes', 'José Craviotto 3693', 110.88, '7792952016972', 'pintura01.jpg', '16/10/2016'),
+(3, 'lavandina ayudín','Walmart', 'Quilmes', 'Av Calchaquí 700', 10.45, '7793253001353', 'lavandina01.jpg', '30/10/2016'),
+(4, 'cuaderno Ledesma Essential', 'Walmart','Avellaneda', 'Carlos Gardel 3900', 80.99, '7791762559099', 'carpeta02.jpg', '25/10/2016');
 
 -- --------------------------------------------------------
 

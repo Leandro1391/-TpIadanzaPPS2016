@@ -1,6 +1,14 @@
   <ion-view title="Grilla Usuarios">
-  
-    <ion-content>
+
+
+  <!-- <ion-nav-buttons side="right">
+
+        <button ng-click="traerLista()" class="button icon ion-loop"></button>
+
+  </ion-nav-buttons> -->
+
+ 
+    <ion-content class="padding">
         <div class="row header">
           <div class="col">Foto </div>
           <div class="col">Nombre</div>
@@ -8,7 +16,16 @@
           <div class="col">Opciones</div>
           <!-- <div class="col">MODIFICAR</div> -->
         </div>
-        <input type="search" placeholder="  Buscar Usuario" ng-model="mifiltro"></input>
+
+        
+        <label class="item-input">
+        		
+        	<i class="icon ion-search  placeholder-icon"></i>
+        	<input type="search" placeholder="Buscar Usuario" ng-model="mifiltro"></input>
+
+        </label>
+        
+        
         <div class="row" ng-repeat="usuario in ListadoUsuarios | filter:mifiltro as resultado">
           <div class="col"><img class='fotoGrilla' ng-src="imagenes/{{usuario.foto}}"></div>
           <div class="col">{{usuario.nombre}}</div>

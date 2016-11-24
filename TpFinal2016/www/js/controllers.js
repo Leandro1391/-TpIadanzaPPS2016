@@ -208,25 +208,106 @@ angular.module('starter.controllers', ['ngCordova'])
 
 })
 
+.controller('controlModificacion', function($scope, $http, $state, $stateParams, FileUploader, $auth, $ionicPopup)
+{
+
+  if($auth.isAuthenticated())
+  {
+  $scope.usuario={};
+  $scope.DatoTest="Modificar Usuario";
+  $scope.uploader = new FileUploader({url: 'PHP/nexo.php'});
+  $scope.uploader.queueLimit = 1;
+  $scope.usuario.id=$stateParams.id;
+  $scope.usuario.correo=$stateParams.correo;
+  $scope.usuario.nombre=$stateParams.nombre;
+  $scope.usuario.clave=$stateParams.clave;
+  $scope.usuario.tipo=$stateParams.tipo;
+  $scope.usuario.foto=$stateParams.foto;
+
+
+  $scope.cargarfoto=function(nombrefoto){
+      var direccion="imagenes/"+nombrefoto;  
+      $http.get(direccion,{responseType:"blob"})
+        .then(function (respuesta){
+            console.info("datos del cargar foto",respuesta);
+            var mimetype=respuesta.data.type;
+            var archivo=new File([respuesta.data],direccion,{type:mimetype});
+            var dummy= new FileUploader.FileItem($scope.uploader,{});
+            dummy._file=archivo;
+            dummy.file={};
+            dummy.file= new File([respuesta.data],nombrefoto,{type:mimetype});
+
+              $scope.uploader.queue.push(dummy);
+         });
+  }
+  $scope.cargarfoto($scope.usuario.foto);
+
+
+  $scope.uploader.onSuccessItem=function(item, response, status, headers)
+  {
+    $http.post('PHP/nexo.php', { datos: {accion :"modificar",usuario:$scope.usuario}})
+        .then(function(respuesta) 
+        {
+          //aca se ejetuca si retorno sin errores       
+          console.log(respuesta.data);
+
+          $state.go("Menu.grillaUsuario");
+        },
+        function errorCallback(response)
+        {
+          //aca se ejecuta cuando hay errores
+          console.log( response);           
+        });
+    console.info("Ya guardé el archivo.", item, response, status, headers);
+  };
+
+
+      $scope.Guardar=function(usuario)
+      {
+
+          var confirmPopup = $ionicPopup.confirm({
+                title: 'Guardando Usuario',
+                template: '¿Está seguro que desea guardar los datos del usuario editado?'
+          });
+
+          confirmPopup.then(function(res) {
+              if(res) {
+                  console.log('You are sure');
+                  console.log("estoy en el guardar function");
+                  if($scope.uploader.queue[0].file.name!='pordefecto.png')
+                  {
+                      var nombreFoto = $scope.uploader.queue[0]._file.name;
+                      $scope.usuario.foto=nombreFoto;
+                  }
+              $scope.uploader.uploadAll();
+              } else 
+                console.log('You are not sure');
+             });
+      }
+
+  }else{
+      $state.go("login");
+  }
+  
+})
+
 ///////////////////////////////////////////////////////////
 /////////CONTROLLER DE GRILLA USUARIO//////////////////////
 //////////////////////////////////////////////////////////
 
-.controller('controlGrillaUsuario', function($scope, $http, $location, $state, FactoryUsuario, $ionicActionSheet, $ionicPopup) {
-    $scope.DatoTest="Grilla Usuario";
+.controller('controlGrillaUsuario', function($scope, $http, $location, $state, $auth, FactoryUsuario, $ionicActionSheet, $ionicPopup) {
+    
+  if($auth.isAuthenticated()){
+
+      $scope.DatoTest="Grilla Usuario";
 
 
-    $scope.guardar = function(usuario){
+    $scope.$on('$ionicView.beforeEnter', function(){
+        FactoryUsuario.mostrarNombre("otro").then(function(respuesta){
 
-    console.log( JSON.stringify(usuario));
-      $state.go("modificarUsuario, {usuario:" + JSON.stringify(usuario)  + "}");
-    }
-
-    FactoryUsuario.mostrarNombre("otro").then(function(respuesta){
-
-    $scope.ListadoUsuarios=respuesta;
-
-     
+            $scope.ListadoUsuarios=respuesta;
+ 
+        });
     });
 
 
@@ -247,6 +328,7 @@ angular.module('starter.controllers', ['ngCordova'])
       },
       buttonClicked: function(index) {
         console.log('BUTTON CLICKED', index);
+        $state.go('Menu.modificar',{id:usuario.id, correo:usuario.correo, nombre:usuario.nombre, clave:usuario.clave, tipo:usuario.tipo, foto:usuario.foto});
         return true;
       },
       destructiveButtonClicked: function() {
@@ -319,10 +401,15 @@ angular.module('starter.controllers', ['ngCordova'])
       //        $scope.ListadoUsuarios= [];
       //       console.log( response);     
       //  });
+
+  }else
+  $state.go("login");
+
+    
 })
 
 
-.controller('controlAltaUsuario', function($scope, $http ,$state, FileUploader, cargadoDeFoto, $auth) {
+.controller('controlAltaUsuario', function($scope, $http ,$state, FileUploader, cargadoDeFoto, $auth, $ionicPopup) {
 
   if($auth.isAuthenticated())
   {
@@ -342,33 +429,59 @@ angular.module('starter.controllers', ['ngCordova'])
         cargadoDeFoto.CargarFoto($scope.usuario.foto,$scope.uploader);
        
 
-        $scope.Guardar=function(){
-        console.log($scope.uploader.queue);
-        //debugger;
-        if($scope.uploader.queue[0].file.name!='pordefecto.png')
-        {
-          var nombreFoto = $scope.uploader.queue[0]._file.name;
-          $scope.usuario.foto=nombreFoto;
-        }
-        $scope.uploader.uploadAll();
-          console.log("usuario a guardar:");
-          console.log($scope.usuario);
-        }
+        $scope.Guardar=function(usuario){
+
+            var confirmPopup = $ionicPopup.confirm({
+                 title: 'Guardando Usuario',
+                template: '¿Está seguro que desea guardar el usuario '+ usuario.nombre+'?'
+               });
+
+               confirmPopup.then(function(res) {
+                 if(res) {
+
+                   console.log('You are sure');
+                    console.log($scope.uploader.queue);
+                  //debugger;
+                  if($scope.uploader.queue[0].file.name!='pordefecto.png')
+                  {
+                    var nombreFoto = $scope.uploader.queue[0]._file.name;
+                    $scope.usuario.foto=nombreFoto;
+                  }
+                  $scope.uploader.uploadAll();
+                    console.log("usuario a guardar:");
+                    console.log(usuario);
+                 } else {
+                   console.log('You are not sure');
+                 }
+               });
+            };
 
          $scope.uploader.onSuccessItem=function(item, response, status, headers)
         {
-          //alert($scope.persona.foto);
-            $http.post('PHP/nexo.php', { datos: {accion :"insertar",usuario:$scope.usuario}})
-              .then(function(respuesta) {       
-                 //aca se ejetuca si retorno sin errores        
-               console.log(respuesta.data);
-               $state.go("grillaUsuario");
 
-            },function errorCallback(response) {        
-                //aca se ejecuta cuando hay errores
-                console.log( response);           
-              });
-          console.info("Ya guardé el archivo.", item, response, status, headers);
+            $http.post('Datos/usuarios',$scope.usuario)
+                          .then(function(respuesta) {       
+                               //aca se ejetuca si retorno sin errores        
+                               console.log(respuesta.data);
+                               $state.go("Menu.inicio");
+
+                          },function errorCallback(response) {        
+                              //aca se ejecuta cuando hay errores
+                              console.log( response);           
+                          });
+
+          //alert($scope.persona.foto);
+            // $http.post('PHP/nexo.php', { datos: {accion :"insertar",usuario:$scope.usuario}})
+            //   .then(function(respuesta) {       
+            //      //aca se ejetuca si retorno sin errores        
+            //    console.log(respuesta.data);
+            //    $state.go("Menu.inicio");
+
+            // },function errorCallback(response) {        
+            //     //aca se ejecuta cuando hay errores
+            //     console.log( response);           
+            //   });
+          // console.info("Ya guardé el archivo.", item, response, status, headers);
         };
         }
   else{
