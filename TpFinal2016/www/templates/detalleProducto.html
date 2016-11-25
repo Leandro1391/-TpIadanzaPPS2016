@@ -1,0 +1,63 @@
+<ion-view title="Detalles del Producto">
+
+	<ion-content>
+
+		<div class="list">
+
+			  <label class="item item-input item-stacked-label">
+				    <span class="input-label">Nombre</span>
+				    <input type="text" ng-model="producto.nombre">
+			  </label>
+
+			  <label class="item item-input item-stacked-label">
+				    <span class="input-label">Local</span>
+				    <input type="text" ng-model="producto.local">
+			  </label>
+
+			  <label class="item item-input item-stacked-label">
+				    <span class="input-label">Dirección</span>
+				    <input type="text" ng-model="producto.direccion">
+			  </label>
+
+			  <label class="item item-input item-stacked-label">
+				    <span class="input-label">Localidad</span>
+				    <input type="text" ng-model="producto.localidad">
+			  </label>
+
+			  <label class="item item-input item-stacked-label">
+				    <span class="input-label">Precio</span>
+				    <input type="text" ng-model="producto.precio">
+			  </label>
+
+			  <label class="item item-input item-stacked-label">
+				    <span class="input-label">Código</span>
+				    <input type="text" ng-model="producto.codbar">
+			  </label>
+
+		</div>
+
+			<label class="item item-divider">
+			    <span class="input-label">Foto</span>
+			</label>
+
+			<div class="col"><img class="size" ng-src="imagenes/{{producto.foto}}">
+
+				<!-- <div class="col text-center">
+					<button  ng-disabled="true" class="button button-icon icon ion-camera" ng-click="upload()"></button>
+				</div> -->
+
+			</div>
+
+		  
+
+		  	<!-- <div class="row"><button class="button button-block button-positive" type="submit" ng-click="Guardar(producto)">Guardar</button></div> -->
+
+		    	
+
+		</div>
+
+
+	</ion-content>
+	
+
+</ion-view>

@@ -91,6 +91,15 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'satelli
         }
     })
 
+  .state('Menu.altaProducto', {
+        url: '/altaProducto',
+        views: {
+            'contenido': {
+             templateUrl: 'templates/altaProducto.html',
+             controller: 'controlAltaProducto'
+            }
+        }
+    })
 
   .state('Menu.modificar', {
      url: '/modificar/{id}?:correo:nombre:clave:tipo:foto',
@@ -104,6 +113,42 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'satelli
      },
      views: {
       'contenido': { templateUrl: 'templates/altaUsuario.html',controller: 'controlModificacion' },
+    }
+  })
+
+  .state('Menu.modificarProducto', {
+     url: '/modificarProducto/{id}?:nombre:local:localidad:direccion:precio:codbar:foto:fecha',
+     params: {
+        id: null,
+        nombre:null,
+        local:null,
+        localidad:null,
+        direccion:null,
+        precio:null,
+        codbar:null,
+        foto:null,
+        fecha:null
+     },
+     views: {
+      'contenido': { templateUrl: 'templates/altaProducto.html',controller: 'controlModificarProducto' },
+    }
+  })
+
+  .state('Menu.detallesProducto', {
+     url: '/detallesProducto/{id}?:nombre:local:localidad:direccion:precio:codbar:foto:fecha',
+     params: {
+        id: null,
+        nombre:null,
+        local:null,
+        localidad:null,
+        direccion:null,
+        precio:null,
+        codbar:null,
+        foto:null,
+        fecha:null
+     },
+     views: {
+      'contenido': { templateUrl: 'templates/detalleProducto.html',controller: 'controlModificarProducto' },
     }
   })
 

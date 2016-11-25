@@ -1,27 +1,37 @@
-<ion-header-bar class="bar-stable">
-        <h1 class="title">Service Provider Details</h1>
-    </ion-header-bar>
-    <ion-content>
+  <ion-view title="{{DatoTest}}">
+
+ 
+    <ion-content class="padding">
         <div class="row header">
-          <!-- <div class="col">Foto </div> -->
+          <div class="col">Foto </div>
           <div class="col">Nombre</div>
-          <div class="col">Tipo</div>
-          <div class="col">BORRAR</div>
-          <div class="col">MODIFICAR</div>
+          <div class="col">Precio</div>
+          <div class="col" ng-if="esVisible.cliente">Localidad</div>
+          <div class="col" ng-if="esVisible.admin || esVisible.empleado">Opciones</div>
         </div>
-        <div class="row" ng-repeat="usuario in ListadoUsuarios | filter:mifiltro as resultado">
-          <!-- <div class="col"><img  class='fotoGrilla' ng-src="imagenes/{{usuario.foto}}" ></div> -->
-          <div class="col">{{usuario.nombre}}</div>
-          <div class="col">{{usuario.tipo}}</div>
 
-          <div class="col"><button class="button button-small button-assertive" ng-click="Borrar(usuario)">
-  			Borrar
-			</button></div>
+        
+        <label class="item-input">
+            
+          <i class="icon ion-search  placeholder-icon"></i>
+          <input type="search" placeholder="Buscar producto" ng-model="mifiltro"></input>
 
-			 <div class="col"><button class="button button-small button-energized" ng-click="Borrar(usuario)">
-  			Modificar
-			</button></div>
+        </label>
+        
+        
+        <div class="row" on-touch="onTouch(producto)" ng-repeat="producto in ListadoProductos | filter:mifiltro as resultado">
+          <div class="col"><img class='fotoGrilla' ng-src="imagenes/{{producto.foto}}"></div>
+          <div class="col">{{producto.nombre}}</div>
+          <div class="col">${{producto.precio}}</div>
+          <div class="col" ng-if="esVisible.cliente">{{producto.localidad}}</div>
 
-          <!-- <div class="col"><button class="button" ng-click="ctrl.add($index)">Add</button></div> -->
+          <div class="col" ng-if="esVisible.admin || esVisible.empleado"><button class="button button-icon icon ion-settings" ng-click="showActionsheet(producto)"></button></div>
+
+        </div>
+
+        <div class="row" ng-if="resultado.length == 0">
+          <div class="col">No existe producto con ese dato....</div>
         </div>
     </ion-content>
+
+    </ion-view>

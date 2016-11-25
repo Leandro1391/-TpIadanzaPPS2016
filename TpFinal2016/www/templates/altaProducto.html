@@ -1,0 +1,56 @@
+<ion-view title="{{DatoTest}}">
+
+	<ion-content>
+		
+		<div class="list">
+  			<label class="item item-input">
+    			<input type="text" placeholder="Nombre" ng-model="producto.nombre" >
+  			</label>
+		  	<label class="item item-input">
+		    	<input type="text" placeholder="Local" ng-model="producto.local">
+		  	</label>
+		  	<label class="item item-input">
+		    	<input type="text" placeholder="Localidad" ng-model="producto.localidad"></input>
+		  	</label>
+		  	<label class="item item-input">
+		    	<input type="text" placeholder="Direccion" ng-model="producto.direccion"></input>
+		  	</label>
+		  	<label class="item item-input">
+		    	<input type="text" placeholder="Precio" ng-model="producto.precio"></input>
+		  	</label>
+		  	<label class="item item-input">
+		    	<input type="text" placeholder="Código" ng-model="producto.codbar"></input>
+		  	</label>
+		  	
+		  	<label class="item item-input">
+		    	<input type="text" placeholder="Fecha" ng-model="producto.fecha" ng-disabled="true"></input>
+		  	</label>
+
+			<label class="item item-divider">
+			    <span class="input-label">Foto</span>
+			</label>
+
+			<div class="col"><img class="size" ng-src="imagenes/{{producto.foto}}">
+
+				<div class="col text-center">
+					<button  ng-disabled="true" class="button button-icon icon ion-camera" ng-click="upload()"></button>
+				</div>
+
+			</div>
+
+		  
+
+		  	<div class="row"><button class="button button-block button-positive" type="submit" ng-click="Guardar(producto)">Guardar</button></div>
+
+			<!--< div class="item item-avatar" ng-repeat="item in uploader.queue">
+				<img ng-src="imagenes/pordefecto.png" width="100%" /> -->
+
+		    	
+
+		</div>
+
+
+	</ion-content>
+	
+
+</ion-view>

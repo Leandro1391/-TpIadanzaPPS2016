@@ -130,8 +130,10 @@ angular.module('starter.controllers', ['ngCordova'])
 
 .controller('NavController', function($scope, $ionicSideMenuDelegate, $auth, $state) {
 
+    if($auth.isAuthenticated())
+    {
 
-    $scope.esVisible={
+      $scope.esVisible={
         admin:false,
         empleado:false,
         cliente:false
@@ -146,7 +148,7 @@ angular.module('starter.controllers', ['ngCordova'])
 
     $scope.Logout=function()
     {
-      console.log("estoy adentro del logout");
+      console.log("estoy dentro del logout");
       $auth.logout()
       .then(function()
       {
@@ -158,33 +160,195 @@ angular.module('starter.controllers', ['ngCordova'])
       $scope.toggleLeft = function() {
         $ionicSideMenuDelegate.toggleLeft();
       };
+
+    }else
+      $state.go("login");
+
  })
 
-.controller('controlGrillaProducto', function($scope, $http, $state, $auth, FactoryProducto) {
+
+.controller('controlAltaProducto', function($scope, $http ,$state, $auth, FileUploader) {
+
+  if($auth.isAuthenticated())
+  {
+    $scope.DatoTest="Alta Producto";
+
+    // $scope.uploader = new FileUploader({url: 'PHP/nexoLocal.php'});
+
+        $scope.esVisible={
+        admin:false,
+        user:false,
+        cliente:false
+        };
+
+
+    if($auth.getPayload().tipo=="administrador")
+      $scope.esVisible.admin=true;
+    if($auth.getPayload().tipo=="usuario")
+      $scope.esVisible.user=true;
+    if($auth.getPayload().tipo=="cliente")
+      $scope.esVisible.cliente=true;
+
+
+
+      $scope.producto={
+        nombre:"Product New",
+        local:"Esso",
+        localidad:"Wilde",
+        direccion:"Av las Flores 577",
+        precio:"20.45",
+        codbar:"7756543214",
+        foto:"productopordefecto.jpg"
+      };
+
+      $scope.producto.fecha=new Date();
+
+      var dd = $scope.producto.fecha.getDate();
+      var mm = $scope.producto.fecha.getMonth()+1; //Enero es 0!
+      
+      var yyyy = $scope.producto.fecha.getFullYear();
+      
+      $scope.producto.fecha= dd+'/'+mm+'/'+yyyy;
+
+      var today = new Date();
+      var dd = today.getDate();
+      var mm = today.getMonth()+1;
+
+          $scope.Guardar=function(){
+
+
+              ///////////////////SLIM/////////////
+              $http.post('Datos/productos',$scope.producto)
+                          .then(function(respuesta) {       
+                               //aca se ejetuca si retorno sin errores        
+                               console.log(respuesta.data);
+                               $state.go("Menu.inicio");
+
+                          },function errorCallback(response) {        
+                              //aca se ejecuta cuando hay errores
+                              console.log( response);           
+                          });
+
+         }
+
+  }else{$state.go("login");}
+
+})
+
+
+////////////////////////////////////////////////////////
+////////////////CONTROLLER GRILLA PRODUCTO////////////////
+/////////////////////////////////////////////////////////
+
+.controller('controlGrillaProducto', function($scope, $http, $state, $auth, FactoryProducto, $ionicActionSheet, $ionicPopup) {
 
   if($auth.isAuthenticated())
   {
     $scope.DatoTest="Grilla Producto";
 
 
-    //FactoryProducto.mostrarapellido();
+    $scope.esVisible={
+        admin:false,
+        empleado:false,
+        cliente:false
+    };
 
-    FactoryProducto.mostrarNombre("otro").then(function(respuesta){
+    if($auth.getPayload().tipo=="administrador")
+      $scope.esVisible.admin=true;
+    if($auth.getPayload().tipo=="empleado")
+      $scope.esVisible.empleado=true;
+    if($auth.getPayload().tipo=="cliente")
+      $scope.esVisible.cliente=true;
 
-     $scope.ListadoProductos=respuesta;
- 
-   });
-    //$scope.Listadopersonas =factory.fu();
-    //$http.get('PHP/nexo.php', { params: {accion :"traer"}})
-      $scope.Borrar=function(id){
-      // console.log("borrar"+id);
-       $http.delete('Datos/productos/'+id)
-      .then(function(respuesta) {      
-             //aca se ejetuca si retorno sin errores        
-             console.log(respuesta.data);
 
-            $http.get('Datos/productos')
-            .then(function(respuesta) {       
+    $scope.$on('$ionicView.beforeEnter', function(){
+
+        FactoryProducto.mostrarNombre("otro").then(function(respuesta){
+
+            $scope.ListadoProductos=respuesta;
+     
+       });
+    });
+
+
+
+
+    $scope.onTouch=function(producto){
+
+      if($scope.esVisible.cliente){
+        // console.log("Estoy adentro de onTouch con el producto id: "+ producto.id);
+            
+            $ionicActionSheet.show({
+              titleText: 'Opciones',
+              buttons: [
+                { text: '<i class="icon ion-information-circled"></i> Más detalles' },
+                { text: '<i class="icon ion-navigate"></i> ¿Cómo llegar?' },
+              ],
+              cancelText: 'Cancel',
+              cancel: function() {
+                console.log('CANCELLED');
+              },
+              buttonClicked: function(index) {
+                console.log('BUTTON CLICKED', index);
+                if(index == 0){
+                          $state.go('Menu.detallesProducto',{id:producto.id, nombre:producto.nombre, local:producto.local, localidad:producto.localidad, direccion:producto.direccion, precio:producto.precio, codbar:producto.codbar, foto:producto.foto, fecha:producto.fecha});
+                }else
+                {
+                  //aca un state al mapa de google
+                }
+                return true;
+              },
+            });
+          
+
+
+      }
+
+      // $state.go('Menu.modificarProducto',{id:producto.id, nombre:producto.nombre, local:producto.local, localidad:producto.localidad, direccion:producto.direccion, precio:producto.precio, codbar:producto.codbar, foto:producto.foto, fecha:producto.fecha});
+        //aca va para el cliente una action sheet que diga más detalles o ¿como llegar?
+    }
+
+
+    $scope.showActionsheet = function(producto) {
+
+    
+    $ionicActionSheet.show({
+      titleText: 'Opciones de Grilla Producto',
+      buttons: [
+        { text: '<i class="icon ion-edit"></i> Modificar' },
+        // { text: '<i class="icon ion-arrow-move"></i> Move' },
+      ],
+      destructiveText: 'Borrar',
+      cancelText: 'Cancel',
+      cancel: function() {
+        console.log('CANCELLED');
+      },
+      buttonClicked: function(index) {
+        console.log('BUTTON CLICKED', index);
+        $state.go('Menu.modificarProducto',{id:producto.id, nombre:producto.nombre, local:producto.local, localidad:producto.localidad, direccion:producto.direccion, precio:producto.precio, codbar:producto.codbar, foto:producto.foto, fecha:producto.fecha});
+        return true;
+      },
+      destructiveButtonClicked: function() {
+        console.log('DESTRUCT');
+        console.log("producto a eliminar: "+ producto.id);
+
+
+           // A confirm dialog
+       // $scope.showConfirm = function() {
+         var confirmPopup = $ionicPopup.confirm({
+           title: 'Eliminar producto: '+ producto.nombre,
+           template: '¿Está seguro que desea eliminar al producto '+ producto.nombre+'?'
+         });
+
+         confirmPopup.then(function(res) {
+           if(res) {
+               $http.delete('Datos/productos/'+producto.id)
+                .then(function(respuesta) {      
+               //aca se ejetuca si retorno sin errores        
+               console.log(respuesta.data);
+
+             $http.get('Datos/productos')
+             .then(function(respuesta) {       
 
                    $scope.ListadoProductos = respuesta.data;
                    console.log(respuesta.data);
@@ -193,18 +357,80 @@ angular.module('starter.controllers', ['ngCordova'])
                    $scope.ListadoProductos= [];
                   console.log( response);
 
-      });
+          });
 
         },function errorCallback(response) {        
             //aca se ejecuta cuando hay errores
             console.log( response);           
         });
+             console.log('You are sure');
+           } else {
+             console.log('You are not sure');
+           }
+         });
+       // };
 
+       
+          return true;
+        }
+      });
+    };
 
-  }
-  }
-  else
+  }else
     $state.go("login");
+
+})
+
+.controller('controlModificarProducto', function($scope, $http, $state, $stateParams, FileUploader, $auth, $ionicPopup){
+
+    if ($auth.isAuthenticated()) {
+      $scope.DatoTest="Modificar Producto";
+
+      $scope.producto={
+        id:$stateParams.id,
+        nombre:$stateParams.nombre,
+        local:$stateParams.local,
+        localidad:$stateParams.localidad,
+        direccion:$stateParams.direccion,
+        precio:$stateParams.precio,
+        codbar:$stateParams.codbar,
+        foto:$stateParams.foto,
+        fecha:$stateParams.fecha
+      }
+
+      $scope.Guardar=function(){
+
+         // A confirm dialog
+           var confirmPopup = $ionicPopup.confirm({
+             title: 'Guardando Producto',
+             template: '¿Está seguro que desea guardar con los cambios hechos?'
+           });
+
+           confirmPopup.then(function(res) {
+             if(res) {
+               console.log('You are sure');
+               ///////////////////SLIM/////////////
+                $http.put('Datos/productos',$scope.producto)
+                .then(function(respuesta) {       
+                     //aca se ejetuca si retorno sin errores        
+                console.log(respuesta.data);
+                $state.go("Menu.grillaProducto");
+
+                },function errorCallback(response) {        
+                    //aca se ejecuta cuando hay errores
+                    console.log( response);           
+                });
+             } else {
+               console.log('You are not sure');
+             }
+           });
+
+
+      }
+
+
+    }else
+      $state.go("login");
 
 })
 
@@ -418,7 +644,7 @@ angular.module('starter.controllers', ['ngCordova'])
         $scope.uploader = new FileUploader({url: 'PHP/nexo.php'});
         $scope.uploader.queueLimit = 1;
 
-      //inicio las variables
+        //inicio las variables
         $scope.usuario={};
         $scope.usuario.correo= "pepe@pepe.com" ;
         $scope.usuario.nombre= "pepe" ;

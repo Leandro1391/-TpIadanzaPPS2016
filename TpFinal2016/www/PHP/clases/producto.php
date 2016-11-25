@@ -133,7 +133,7 @@ class producto
 		//$consulta =$objetoAccesoDato->RetornarConsulta("CALL TraerUnProducto(:id)");
 		$consulta->bindValue(':id', $idParametro, PDO::PARAM_INT);
 		$consulta->execute();
-		$productoBuscado= $consulta->fetchObject('productos');
+		$productoBuscado= $consulta->fetchObject('producto');
 		return $informeBuscado;	
 					
 	}
@@ -144,7 +144,7 @@ class producto
 		$consulta =$objetoAccesoDato->RetornarConsulta("SELECT * FROM misproductos");
 		//$consulta =$objetoAccesoDato->RetornarConsulta("CALL TraerTodasLasProductos() ");
 		$consulta->execute();			
-		$arrInformes= $consulta->fetchAll(PDO::FETCH_CLASS, "productos");	
+		$arrInformes= $consulta->fetchAll(PDO::FETCH_CLASS, "producto");	
 		return $arrInformes;
 	}
 
@@ -153,7 +153,7 @@ class producto
 		$objetoAccesoDato = AccesoDatos::dameUnObjetoAcceso(); 
 		$consulta =$objetoAccesoDato->RetornarConsulta("SELECT * FROM misproductos ORDER BY precio");
 		$consulta->execute();			
-		$arrPersonas= $consulta->fetchAll(PDO::FETCH_CLASS, "productos");	
+		$arrPersonas= $consulta->fetchAll(PDO::FETCH_CLASS, "producto");	
 		return $arrPersonas;
 	}
 	
@@ -171,7 +171,7 @@ class producto
 	public static function ModificarProducto($producto)
 	{
 			$objetoAccesoDato = AccesoDatos::dameUnObjetoAcceso(); 
-			$consulta =$objetoAccesoDato->RetornarConsulta("UPDATE producto set nombre=:nombre,local=:local,localidad=:localidad,direccion=:direccion,precio=:precio,codbar=:codbar,foto=:foto,fecha=:fecha WHERE id=:id");
+			$consulta =$objetoAccesoDato->RetornarConsulta("UPDATE misproductos set nombre=:nombre,local=:local,localidad=:localidad,direccion=:direccion,precio=:precio,codbar=:codbar,foto=:foto,fecha=:fecha WHERE id=:id");
 			$consulta->bindValue(':id',$producto->id, PDO::PARAM_INT);
 			$consulta->bindValue(':nombre',$producto->nombre, PDO::PARAM_STR);
 			$consulta->bindValue(':local',$producto->local, PDO::PARAM_STR);
@@ -191,7 +191,7 @@ class producto
 	public static function InsertarProducto($producto)
 	{
 		$objetoAccesoDato = AccesoDatos::dameUnObjetoAcceso(); 
-		$consulta =$objetoAccesoDato->RetornarConsulta("INSERT into producto (nombre,local,localidad,direccion,precio,codbar,foto,fecha)values(:nombre,:local,:localidad,:direccion,:precio,:codbar,:foto,:fecha)");
+		$consulta =$objetoAccesoDato->RetornarConsulta("INSERT into misproductos (nombre,local,localidad,direccion,precio,codbar,foto,fecha)values(:nombre,:local,:localidad,:direccion,:precio,:codbar,:foto,:fecha)");
 		//$consulta =$objetoAccesoDato->RetornarConsulta("CALL Insertarlocal (:nombre,:apellido,:dni,:foto)");
 		$consulta->bindValue(':nombre',$producto->nombre, PDO::PARAM_STR);
 		$consulta->bindValue(':local',$producto->local, PDO::PARAM_STR);
