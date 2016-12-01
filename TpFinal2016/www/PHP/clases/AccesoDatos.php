@@ -1,13 +1,15 @@
 <?php
+header('Access-Control-Allow-Origin: *');
 class AccesoDatos
 {
     private static $ObjetoAccesoDatos;
     private $objetoPDO;
+    // $this->objetoPDO = new PDO('mysql:host=mysql.hostinger.com.ar;dbname=u754587599_root;charset=utf8', 'u754587599_root', 'DPld4d65DFfg',
  
     private function __construct()
     {
         try { 
-            $this->objetoPDO = new PDO('mysql:host=localhost;dbname=pps2016;charset=utf8', 'root', '', array(PDO::ATTR_EMULATE_PREPARES => false,PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
+            $this->objetoPDO = new PDO('mysql:host=mysql.hostinger.com.ar;dbname=u754587599_root;charset=utf8', 'u754587599_root', 'DPld4d65DFfg', array(PDO::ATTR_EMULATE_PREPARES => false,PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
             $this->objetoPDO->exec("SET CHARACTER SET utf8");
             } 
         catch (PDOException $e) { 

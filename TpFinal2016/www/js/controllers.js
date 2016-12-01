@@ -61,7 +61,9 @@ angular.module('starter.controllers', ['ngCordova'])
   
   $scope.DatoTest="INICIAR SESIÓN";
 
-  $scope.cargarCliente = function()
+  $scope.$on('$ionicView.beforeEnter', function(){
+
+    $scope.cargarCliente = function()
   {
     // $scope.correo = "cliente@cliente.com";
     $scope.nombre = "julia";
@@ -117,14 +119,212 @@ angular.module('starter.controllers', ['ngCordova'])
       $state.go("altaUser");
     };
   }
+
+  });
+
+  
 })
 
 
-.controller('RootPageController', function($scope, $ionicSideMenuDelegate, $auth, $state) {
+.controller('RootPageController', function($scope, $ionicSideMenuDelegate, $auth, $state, $window) {
 
-    if(!$auth.isAuthenticated()){
-        $state.go("login");
+    $scope.datos = {};
+
+    $scope.datos.pantallaAlto = $window.innerHeight;
+
+    $scope.datos.pantallaAncho = $window.innerWidth;
+
+})
+
+.controller('controlMenuInicio', function($scope, $auth, $window, $state){
+
+  if($auth.isAuthenticated()){
+    $scope.datos = {};
+
+    $scope.datos.pantallaAlto = $window.innerHeight;
+
+    $scope.datos.pantallaAncho = $window.innerWidth;
+  }else
+    $state.go("login");
+
+})
+
+.controller('controlDetalles', function($scope, $cordovaDevice, $ionicPlatform){
+
+  $ionicPlatform.ready(function () {
+
+    //   function mostrar_objeto(obj){
+    //   for (var propiedad in obj) {
+    //     document.write(propiedad+": "+obj[propiedad] + "<br />")
+    //   }
+    // }
+
+    // mostrar_objeto($cordovaDevice);
+
+    // console.log("device: "+$cordovaDevice.getDevice());
+
+    $scope.device = $cordovaDevice.getDevice();
+
+    $scope.manufacturer = $cordovaDevice.getManufacturer();
+
+    $scope.cordova = $cordovaDevice.getCordova();
+
+    $scope.model = $cordovaDevice.getModel();
+
+    $scope.platform = $cordovaDevice.getPlatform();
+
+    $scope.uuid = $cordovaDevice.getUUID();
+
+    $scope.version = $cordovaDevice.getVersion();
+
+  }, false);
+
+})
+
+.controller('controlMapa', function($scope, $auth, $state, $cordovaGeolocation, $ionicPlatform, $stateParams, $cordovaVibration, $ionicPopup){
+
+  if($auth.isAuthenticated()){
+
+      $scope.DatoTest="Ubicación";
+   
+      // alert("estoy en el mapa de google");
+
+      $scope.$on('$ionicView.beforeEnter', function(){
+
+          $ionicPlatform.ready(function(){
+
+              id=$stateParams.id;
+              nombre=$stateParams.nombre;
+              localidad=$stateParams.localidad;
+              direccion=$stateParams.direccion;
+
+              lugar = direccion +" , "+ localidad +", Buenos Aires, Argentina";
+
+              navigator.geolocation.getCurrentPosition(success, error);
+      var divMap = document.getElementById("map");
+
+      function error(){
+        alert("Hubo un problema al solicitar los datos: "+error);
+      }
+
+      function success(respuesta){
+        //mostrar_objeto(respuesta.coords);
+        var lat = respuesta.coords.latitude;
+        var long = respuesta.coords.longitude;
+
+        var myLatLong = new google.maps.LatLng(lat, long);
+
+        var mapOptions = {
+          zoom: 12,
+          center: myLatLong,
+          zoomControl: false,
+          streetViewControl: false
+        }
+
+        var map = new google.maps.Map(document.getElementById("map"), mapOptions);
+
+        var directionsDisplay = new google.maps.DirectionsRenderer;
+        var directionsService = new google.maps.DirectionsService;
+        var serviceDistance = new google.maps.DistanceMatrixService();
+
+        directionsDisplay.setMap(map);
+
+        calculateAndDisplayRoute(directionsService, directionsDisplay);
+        calcularDuracionyTiempo(serviceDistance);
+        document.getElementById('mode').addEventListener('change', function() {
+        calculateAndDisplayRoute(directionsService, directionsDisplay);
+        calcularDuracionyTiempo(serviceDistance);
+        });
+
+
+
+        function calcularDuracionyTiempo(serviceDistance) {
+
+                 var selectedMode = document.getElementById('mode').value;
+
+                serviceDistance.getDistanceMatrix(
+                {
+                    origins: [myLatLong],
+                    destinations: [lugar],
+                    // travelMode: google.maps.TravelMode.DRIVING,
+                    travelMode: google.maps.TravelMode[selectedMode],
+                    avoidHighways: false,
+                    avoidTolls: false
+                }, 
+                callback
+                );
+
+        function callback(response, status) {
+            var orig = "";//document.getElementById("orig"),
+            var dest = "";//document.getElementById("dest"),
+            // var distancia = document.getElementById("distancia");
+            var distanciaDiv = document.getElementById('distancia');
+            var duracionDiv = document.getElementById('duracion');
+            distanciaDiv.innerHTML = '';
+            duracion.innerHTML = '';
+
+            
+
+            if(status=="OK") {
+                orig.value = response.destinationAddresses[0];
+                dest.value = response.originAddresses[0];
+                distanciaDiv.innerHTML = response.rows[0].elements[0].distance.text;
+                duracionDiv.innerHTML = response.rows[0].elements[0].duration.text;
+                var numero = response.rows[0].elements[0].distance.text;
+                var a = parseFloat(numero);
+                if (a < 0.1 || a == 0.1) {
+                    $cordovaVibration.vibrate(1000);
+                    $ionicPopup.alert({
+                      title: 'Aviso!!',
+                      template: 'Se encuentra a menos de 100 mts del local'
+                   });
+                }
+                // alert(numero);
+                // if (typeof numero == 'string') {
+                //   alert("es un string");
+                // }else
+                //   alert("no es un string");
+                console.log("distancia: " + response.rows[0].elements[0].distance.text);
+                console.log("tiempo: " + response.rows[0].elements[0].duration.text);
+                console.log("distancia:"+ distancia);
+                // distanciaDiv.innerHTML = distancia;
+            } else {
+                alert("Error: " + status);
+            }
+          }
+
+      }
+
+
+        function calculateAndDisplayRoute(directionsService, directionsDisplay) {
+              var selectedMode = document.getElementById('mode').value;
+              directionsService.route({
+                origin: myLatLong,  // Haight.
+                destination: String(lugar),  // Ocean Beach.
+                // Note that Javascript allows us to access the constant
+                // using square brackets and a string value as its
+                // "property."
+                travelMode: google.maps.TravelMode[selectedMode]
+              }, function(response, status) {
+                if (status == google.maps.DirectionsStatus.OK) {
+                  directionsDisplay.setDirections(response);
+                } else {
+                  window.alert('Directions request failed due to ' + status);
+                }
+              });
+        }
+
     }
+
+
+          })
+
+      });
+
+
+
+  }else
+    $state.go("login");
 
 })
 
@@ -153,7 +353,6 @@ angular.module('starter.controllers', ['ngCordova'])
       .then(function()
       {
         $state.go("login");
-        $route.reload();
       });
     };
 
@@ -167,11 +366,18 @@ angular.module('starter.controllers', ['ngCordova'])
  })
 
 
-.controller('controlAltaProducto', function($scope, $http ,$state, $auth, FileUploader) {
+.controller('controlAltaProducto', function($scope, $http, $sce ,$state, $auth, FileUploader, $ionicPlatform, $cordovaCamera, $ionicPopup, $cordovaFileTransfer, $cordovaBarcodeScanner) {
 
   if($auth.isAuthenticated())
   {
     $scope.DatoTest="Alta Producto";
+
+    var defaultHTTPHeaders = {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json'
+    };
+
+    $http.defaults.headers.post = defaultHTTPHeaders;
 
     // $scope.uploader = new FileUploader({url: 'PHP/nexoLocal.php'});
 
@@ -188,6 +394,94 @@ angular.module('starter.controllers', ['ngCordova'])
       $scope.esVisible.user=true;
     if($auth.getPayload().tipo=="cliente")
       $scope.esVisible.cliente=true;
+
+    $ionicPlatform.ready(function() {
+
+        $scope.scanBarCode = function() {
+
+            // alert("estoy en el scan()");
+
+          $cordovaBarcodeScanner.scan().then(function(imageData){
+
+            // alert("Codigo: "+imageData.text);
+            $scope.producto.codbar=imageData.text;
+
+            // cordova.InAppBrowser.open(imageData.text, '_blank', 'location=yes');
+            //console.log("format" + imageData.format)
+
+          }, function(error){
+            console.log("un error ha sucedido" + error);
+          });
+
+        }
+
+    });
+
+    $ionicPlatform.ready(function() {
+        $scope.enabled=true;
+
+        $scope.upload = function() {
+
+            var options = {
+            quality: 50,
+            destinationType: Camera.DestinationType.FILE_URI,
+            sourceType: Camera.PictureSourceType.CAMERA,
+            allowEdit: false,
+            encodingType: Camera.EncodingType.JPEG,
+            targetWidth: 100,
+            targetHeight: 100,
+            popoverOptions: CameraPopoverOptions,
+            saveToPhotoAlbum: false,
+            cameraDirection:0,
+            correctOrientation:true
+        };
+
+            $cordovaCamera.getPicture(options).then(function(imageData){
+                $scope.producto.foto = imageData;
+                // alert("nombre de la foto: " + $scope.producto.foto);
+            }, function(error){
+                $ionicPopup.alert({
+            title: 'Error',
+            template: 'error al sincronizar: '+error
+             });
+
+            });
+
+
+
+            // $cordovaFileTransfer.upload("http://elmejorprecio.esy.es/imagenes", imageData, options).then(function(result) {
+            //     console.log("SUCCESS: " + JSON.stringify(result.response));
+            //   }, function(err) {
+            //     console.log("ERROR: " + JSON.stringify(err));
+            //   }, function (progress) {
+            //     // constant progress updates
+            // });
+
+        }
+
+        $scope.subirFoto=function(){
+
+          alert("estoy en la funcion subirFoto");
+
+            var opciones = {
+            fileKey: "avatar",
+            fileName: "image.jpg",
+            chunkedMode: false,
+            mimeType: "image/jpeg"
+            };
+
+            $cordovaFileTransfer.upload("http://elmejorprecio.esy.es/imagenes", imageData, opciones)
+            .then(function(result) {
+              alert("se ha subido el archivo");
+                }, function(err) {
+                  alert("Error: "+ err);
+                }, function (progress) {
+                  // constant progress updates
+            });
+        }
+
+         
+    }, false);
 
 
 
@@ -216,18 +510,35 @@ angular.module('starter.controllers', ['ngCordova'])
 
           $scope.Guardar=function(){
 
-
+              // var urlCompleta = 'http://elmejorprecio.esy.es/Datos/productos';
+              // var postUrl = $sce.trustAsResourceUrl(urlCompleta);
               ///////////////////SLIM/////////////
-              $http.post('Datos/productos',$scope.producto)
+
+              
+                 var confirmPopup = $ionicPopup.confirm({
+                   title: 'Guardando Producto',
+                   template: '¿Seguro que deseas guardar el producto?'
+                 });
+
+                 confirmPopup.then(function(res) {
+                   if(res) {
+                     console.log('You are sure');
+                     $http.post('http://elmejorprecio.esy.es/Datos/productos',$scope.producto)
                           .then(function(respuesta) {       
                                //aca se ejetuca si retorno sin errores        
                                console.log(respuesta.data);
+                               // alert("se guardó el producto");
                                $state.go("Menu.inicio");
 
                           },function errorCallback(response) {        
                               //aca se ejecuta cuando hay errores
+                              alert("hubo un error: "+response.data+"/status: "+response.status+"/config: "+response.config+"/header: "+response.header);
                               console.log( response);           
                           });
+                   } else {
+                     console.log('You are not sure');
+                   }
+                 });
 
          }
 
@@ -240,7 +551,7 @@ angular.module('starter.controllers', ['ngCordova'])
 ////////////////CONTROLLER GRILLA PRODUCTO////////////////
 /////////////////////////////////////////////////////////
 
-.controller('controlGrillaProducto', function($scope, $http, $state, $auth, FactoryProducto, $ionicActionSheet, $ionicPopup) {
+.controller('controlGrillaProducto', function($scope, $http, $state, $auth, FactoryProducto, $ionicActionSheet, $ionicPopup, $ionicPlatform, $cordovaBarcodeScanner) {
 
   if($auth.isAuthenticated())
   {
@@ -270,7 +581,30 @@ angular.module('starter.controllers', ['ngCordova'])
        });
     });
 
+    // $scope.mifiltro={};
 
+
+    $ionicPlatform.ready(function() {
+
+        $scope.scanBarCode = function() {
+
+            // alert("estoy en el scan()");
+
+          $cordovaBarcodeScanner.scan().then(function(imageData){
+
+            // alert("Codigo: "+imageData.text);
+            $scope.mifiltro=imageData.text;
+
+            // cordova.InAppBrowser.open(imageData.text, '_blank', 'location=yes');
+            //console.log("format" + imageData.format)
+
+          }, function(error){
+            console.log("un error ha sucedido" + error);
+          });
+
+        }
+
+    });
 
 
     $scope.onTouch=function(producto){
@@ -294,7 +628,7 @@ angular.module('starter.controllers', ['ngCordova'])
                           $state.go('Menu.detallesProducto',{id:producto.id, nombre:producto.nombre, local:producto.local, localidad:producto.localidad, direccion:producto.direccion, precio:producto.precio, codbar:producto.codbar, foto:producto.foto, fecha:producto.fecha});
                 }else
                 {
-                  //aca un state al mapa de google
+                  $state.go('Menu.mapa',{id:producto.id, local:producto.local, localidad:producto.localidad, direccion:producto.direccion});
                 }
                 return true;
               },
@@ -342,12 +676,12 @@ angular.module('starter.controllers', ['ngCordova'])
 
          confirmPopup.then(function(res) {
            if(res) {
-               $http.delete('Datos/productos/'+producto.id)
+               $http.delete('http://elmejorprecio.esy.es/Datos/productos/'+producto.id)
                 .then(function(respuesta) {      
                //aca se ejetuca si retorno sin errores        
                console.log(respuesta.data);
 
-             $http.get('Datos/productos')
+             $http.get('http://elmejorprecio.esy.es/Datos/productos')
              .then(function(respuesta) {       
 
                    $scope.ListadoProductos = respuesta.data;
@@ -381,7 +715,7 @@ angular.module('starter.controllers', ['ngCordova'])
 
 })
 
-.controller('controlModificarProducto', function($scope, $http, $state, $stateParams, FileUploader, $auth, $ionicPopup){
+.controller('controlModificarProducto', function($scope, $http, $state, $stateParams, FileUploader, $auth, $ionicPopup, $ionicPlatform, $cordovaBarcodeScanner){
 
     if ($auth.isAuthenticated()) {
       $scope.DatoTest="Modificar Producto";
@@ -398,6 +732,28 @@ angular.module('starter.controllers', ['ngCordova'])
         fecha:$stateParams.fecha
       }
 
+      $ionicPlatform.ready(function() {
+
+        $scope.scanBarCode = function() {
+
+            // alert("estoy en el scan()");
+
+          $cordovaBarcodeScanner.scan().then(function(imageData){
+
+            // alert("Codigo: "+imageData.text);
+            $scope.producto.codbar=imageData.text;
+
+            // cordova.InAppBrowser.open(imageData.text, '_blank', 'location=yes');
+            //console.log("format" + imageData.format)
+
+          }, function(error){
+            console.log("un error ha sucedido" + error);
+          });
+
+        }
+
+    });
+
       $scope.Guardar=function(){
 
          // A confirm dialog
@@ -410,7 +766,7 @@ angular.module('starter.controllers', ['ngCordova'])
              if(res) {
                console.log('You are sure');
                ///////////////////SLIM/////////////
-                $http.put('Datos/productos',$scope.producto)
+                $http.put('http://elmejorprecio.esy.es/Datos/productos',$scope.producto)
                 .then(function(respuesta) {       
                      //aca se ejetuca si retorno sin errores        
                 console.log(respuesta.data);
@@ -441,8 +797,8 @@ angular.module('starter.controllers', ['ngCordova'])
   {
   $scope.usuario={};
   $scope.DatoTest="Modificar Usuario";
-  $scope.uploader = new FileUploader({url: 'PHP/nexo.php'});
-  $scope.uploader.queueLimit = 1;
+  // $scope.uploader = new FileUploader({url: 'PHP/nexo.php'});
+  // $scope.uploader.queueLimit = 1;
   $scope.usuario.id=$stateParams.id;
   $scope.usuario.correo=$stateParams.correo;
   $scope.usuario.nombre=$stateParams.nombre;
@@ -450,42 +806,6 @@ angular.module('starter.controllers', ['ngCordova'])
   $scope.usuario.tipo=$stateParams.tipo;
   $scope.usuario.foto=$stateParams.foto;
 
-
-  $scope.cargarfoto=function(nombrefoto){
-      var direccion="imagenes/"+nombrefoto;  
-      $http.get(direccion,{responseType:"blob"})
-        .then(function (respuesta){
-            console.info("datos del cargar foto",respuesta);
-            var mimetype=respuesta.data.type;
-            var archivo=new File([respuesta.data],direccion,{type:mimetype});
-            var dummy= new FileUploader.FileItem($scope.uploader,{});
-            dummy._file=archivo;
-            dummy.file={};
-            dummy.file= new File([respuesta.data],nombrefoto,{type:mimetype});
-
-              $scope.uploader.queue.push(dummy);
-         });
-  }
-  $scope.cargarfoto($scope.usuario.foto);
-
-
-  $scope.uploader.onSuccessItem=function(item, response, status, headers)
-  {
-    $http.post('PHP/nexo.php', { datos: {accion :"modificar",usuario:$scope.usuario}})
-        .then(function(respuesta) 
-        {
-          //aca se ejetuca si retorno sin errores       
-          console.log(respuesta.data);
-
-          $state.go("Menu.grillaUsuario");
-        },
-        function errorCallback(response)
-        {
-          //aca se ejecuta cuando hay errores
-          console.log( response);           
-        });
-    console.info("Ya guardé el archivo.", item, response, status, headers);
-  };
 
 
       $scope.Guardar=function(usuario)
@@ -499,13 +819,18 @@ angular.module('starter.controllers', ['ngCordova'])
           confirmPopup.then(function(res) {
               if(res) {
                   console.log('You are sure');
-                  console.log("estoy en el guardar function");
-                  if($scope.uploader.queue[0].file.name!='pordefecto.png')
-                  {
-                      var nombreFoto = $scope.uploader.queue[0]._file.name;
-                      $scope.usuario.foto=nombreFoto;
-                  }
-              $scope.uploader.uploadAll();
+
+                  $http.put('http://elmejorprecio.esy.es/Datos/usuarios',$scope.usuario)
+                          .then(function(respuesta) {       
+                               //aca se ejetuca si retorno sin errores        
+                               console.log(respuesta.data);
+                               $state.go("Menu.grillaUsuario");
+
+                          },function errorCallback(response) {        
+                              //aca se ejecuta cuando hay errores
+                              console.log( response);           
+                          });
+                  
               } else 
                 console.log('You are not sure');
              });
@@ -529,9 +854,10 @@ angular.module('starter.controllers', ['ngCordova'])
 
 
     $scope.$on('$ionicView.beforeEnter', function(){
+      // alert("estoy en el ionicView");
         FactoryUsuario.mostrarNombre("otro").then(function(respuesta){
 
-            $scope.ListadoUsuarios=respuesta;
+          $scope.ListadoUsuarios=respuesta;
  
         });
     });
@@ -571,26 +897,20 @@ angular.module('starter.controllers', ['ngCordova'])
 
          confirmPopup.then(function(res) {
            if(res) {
-               $http.post("PHP/nexo.php",{datos:{accion :"borrar",usuario:usuario}},{headers: {'Content-Type': 'application/x-www-form-urlencoded'}})
-             .then(function(respuesta) {       
-                     //aca se ejetuca si retorno sin errores        
-                     console.log(respuesta.data);
-                        $http.get('PHP/nexo.php', { params: {accion :"traer"}})
-                        .then(function(respuesta) {       
+               $http.delete('http://elmejorprecio.esy.es/Datos/usuarios/'+usuario.id)
+                .then(function(respuesta) {      
+               //aca se ejetuca si retorno sin errores        
+               // alert(respuesta.data);
+               FactoryUsuario.mostrarNombre("otro").then(function(respuesta){
 
-                               $scope.ListadoUsuarios = respuesta.data.listado;
-                               console.log(respuesta.data);
-
-                          },function errorCallback(response) {
-                               $scope.ListadoUsuarios= [];
-                              console.log( response);
-                              
-                         });
+                $scope.ListadoUsuarios=respuesta;
+       
+              });
 
               },function errorCallback(response) {        
                   //aca se ejecuta cuando hay errores
-                  console.log( response);           
-          });
+                  alert(response.status);           
+              });
              console.log('You are sure');
            } else {
              console.log('You are not sure');
@@ -603,30 +923,6 @@ angular.module('starter.controllers', ['ngCordova'])
       }
     });
   };
-
-
-      // $http.get('Datos/usuarios')
-      // .then(function(respuesta) {       
-
-      //         $scope.ListadoUsuarioa = respuesta.data;
-      //          console.log(respuesta.data);
-
-      //       },function errorCallback(response) {
-      //           $scope.ListadoUsuarioa= [];
-      //           console.log( response);
-
-      //     });
-     
-      // $http.get('PHP/nexo.php', { params: {accion :"traer"}})
-      // .then(function(respuesta) {       
-
-      //        $scope.ListadoUsuarios = respuesta.data.listado;
-      //        console.log(respuesta.data);
-
-      //   },function errorCallback(response) {
-      //        $scope.ListadoUsuarios= [];
-      //       console.log( response);     
-      //  });
 
   }else
   $state.go("login");
@@ -641,8 +937,8 @@ angular.module('starter.controllers', ['ngCordova'])
   {
         $scope.DatoTest="Alta Usuario";
 
-        $scope.uploader = new FileUploader({url: 'PHP/nexo.php'});
-        $scope.uploader.queueLimit = 1;
+        // $scope.uploader = new FileUploader({url: 'PHP/nexo.php'});
+        // $scope.uploader.queueLimit = 1;
 
         //inicio las variables
         $scope.usuario={};
@@ -652,7 +948,7 @@ angular.module('starter.controllers', ['ngCordova'])
         $scope.usuario.tipo= "empleado" ;
         $scope.usuario.foto="pordefecto.png";
         
-        cargadoDeFoto.CargarFoto($scope.usuario.foto,$scope.uploader);
+        // cargadoDeFoto.CargarFoto($scope.usuario.foto,$scope.uploader);
        
 
         $scope.Guardar=function(usuario){
@@ -666,26 +962,8 @@ angular.module('starter.controllers', ['ngCordova'])
                  if(res) {
 
                    console.log('You are sure');
-                    console.log($scope.uploader.queue);
-                  //debugger;
-                  if($scope.uploader.queue[0].file.name!='pordefecto.png')
-                  {
-                    var nombreFoto = $scope.uploader.queue[0]._file.name;
-                    $scope.usuario.foto=nombreFoto;
-                  }
-                  $scope.uploader.uploadAll();
-                    console.log("usuario a guardar:");
-                    console.log(usuario);
-                 } else {
-                   console.log('You are not sure');
-                 }
-               });
-            };
 
-         $scope.uploader.onSuccessItem=function(item, response, status, headers)
-        {
-
-            $http.post('Datos/usuarios',$scope.usuario)
+                   $http.post('http://elmejorprecio.esy.es/Datos/usuarios',$scope.usuario)
                           .then(function(respuesta) {       
                                //aca se ejetuca si retorno sin errores        
                                console.log(respuesta.data);
@@ -695,20 +973,14 @@ angular.module('starter.controllers', ['ngCordova'])
                               //aca se ejecuta cuando hay errores
                               console.log( response);           
                           });
+                   
+                 } else {
+                   console.log('You are not sure');
+                 }
+               });
+            };
 
-          //alert($scope.persona.foto);
-            // $http.post('PHP/nexo.php', { datos: {accion :"insertar",usuario:$scope.usuario}})
-            //   .then(function(respuesta) {       
-            //      //aca se ejetuca si retorno sin errores        
-            //    console.log(respuesta.data);
-            //    $state.go("Menu.inicio");
-
-            // },function errorCallback(response) {        
-            //     //aca se ejecuta cuando hay errores
-            //     console.log( response);           
-            //   });
-          // console.info("Ya guardé el archivo.", item, response, status, headers);
-        };
+        
         }
   else{
         $state.go("login");
@@ -743,7 +1015,7 @@ angular.module('starter.controllers', ['ngCordova'])
 
   this.retornarProductos = function(){
 
-       return $http.get('Datos/productos')
+       return $http.get('http://elmejorprecio.esy.es/Datos/productos')
                     .then(function(respuesta) 
                     {     
                       console.log(respuesta.data);
@@ -777,7 +1049,7 @@ angular.module('starter.controllers', ['ngCordova'])
 
   this.retornarUsuarios = function(){
 
-       return $http.get('Datos/usuarios')
+       return $http.get('http://elmejorprecio.esy.es/Datos/usuarios')
                     .then(function(respuesta) 
                     {     
                       console.log(respuesta.data);

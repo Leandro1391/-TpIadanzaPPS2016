@@ -17,7 +17,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8 */;
 
 --
--- Base de datos: `segundoparcial2016`
+-- Base de datos: `pps2016`
 --
 
 -- --------------------------------------------------------

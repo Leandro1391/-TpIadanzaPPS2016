@@ -17,6 +17,51 @@
 
 }
 
+#floating-panel {
+  position: absolute;
+  top: 2%;
+  right: 2%;
+  z-index: 5;
+  /*background-color: #fff;*/
+  /*padding: 5px;*/
+  /*border: 1px solid #999;*/
+  text-align: center;
+  font-family: 'Roboto','sans-serif';
+  line-height: 30px;
+  /*padding-left: 10px;*/
+  margin-top: 40px;
+}
+
+#texto {
+  position: absolute;
+  top: 15%;
+  right: 155px;
+  z-index: 5;
+  background-color: #fff;
+  padding: 5px;
+  border: 1px solid #999;
+  text-align: center;
+  font-family: 'Roboto','sans-serif';
+  line-height: 30px;
+  padding-left: 10px;
+  margin-top: 40px;
+}
+
+#textoTiempo{
+  position: absolute;
+  top: 10%;
+  right: 2%;
+  z-index: 5;
+  background-color: #fff;
+  padding: 2px;
+  border: 1px solid #999;
+  text-align: center;
+  font-family: 'Roboto','sans-serif';
+  line-height: 30px;
+  padding-left: 2px;
+  margin-top: 40px;
+}
+
 .size
 {
   height: 100px;

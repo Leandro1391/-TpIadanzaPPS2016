@@ -21,6 +21,7 @@
 		  	<label class="item item-input">
 		    	<input type="text" placeholder="Código" ng-model="producto.codbar"></input>
 		  	</label>
+		    	<button class="button button-calm" ng-click="scanBarCode()">Scan Bar</button>
 		  	
 		  	<label class="item item-input">
 		    	<input type="text" placeholder="Fecha" ng-model="producto.fecha" ng-disabled="true"></input>
@@ -33,7 +34,8 @@
 			<div class="col"><img class="size" ng-src="imagenes/{{producto.foto}}">
 
 				<div class="col text-center">
-					<button  ng-disabled="true" class="button button-icon icon ion-camera" ng-click="upload()"></button>
+					<button  class="button button-icon icon ion-camera" ng-click="upload()"></button>
+					<button  class="button button-icon icon ion-android-upload" ng-click="subirFoto()"></button>
 				</div>
 
 			</div>

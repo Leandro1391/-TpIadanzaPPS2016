@@ -24,8 +24,10 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'satelli
 
 .config(function($stateProvider, $urlRouterProvider, $authProvider) {
 
-  $authProvider.loginUrl = 'TpIadanzaPPS2016/TpFinal2016/www/PHP/clases/Autentificador.php';
-  $authProvider.signupUrl = 'TpIadanzaPPS2016/TpFinal2016/www/PHP/clases/Autentificador.php';
+  $authProvider.loginUrl = 'http://elmejorprecio.esy.es/PHP/clases/Autentificador.php';
+  $authProvider.signupUrl = 'http://elmejorprecio.esy.es/PHP/clases/Autentificador.php';
+  // $authProvider.loginUrl = 'TpIadanzaPPS2016/TpFinal2016/www/PHP/clases/Autentificador.php';
+  // $authProvider.signupUrl = 'TpIadanzaPPS2016/TpFinal2016/www/PHP/clases/Autentificador.php';
   $authProvider.tokenName = 'TokenLeandroPPS2016';
   $authProvider.tokenPrefix = 'TLPPS2016';
   $authProvider.authHeader = 'data';
@@ -55,7 +57,8 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'satelli
       url: '/inicio',
       views: {
           'contenido': {
-              templateUrl: 'templates/MenuInicio.html'
+              templateUrl: 'templates/menuInicio.html',
+              controller: 'controlMenuInicio'
           }
       }
   })
@@ -149,6 +152,70 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'satelli
      },
      views: {
       'contenido': { templateUrl: 'templates/detalleProducto.html',controller: 'controlModificarProducto' },
+    }
+  })
+
+  .state('Menu.mapa', {
+        url: '/mapa/{id}?:local:localidad:direccion',
+        params: {
+        id: null,
+        local:null,
+        localidad:null,
+        direccion:null
+        },
+        views: {
+            'contenido': {
+             templateUrl: 'templates/mapa.html',
+             controller: 'controlMapa'
+            }
+        }
+    })
+
+  // setup an abstract state for the tabs directive
+    .state('tab', {
+    url: '/tab',
+    abstract: true,
+    templateUrl: 'templates/tabs.html'
+  })
+
+  // Each tab has its own nav history stack:
+
+  .state('tab.dash', {
+    url: '/dash',
+    views: {
+      'tab-dash': {
+        templateUrl: 'templates/tab-dash.html',
+        controller: 'DashCtrl'
+      }
+    }
+  })
+
+  .state('tab.chats', {
+      url: '/chats',
+      views: {
+        'tab-chats': {
+          templateUrl: 'templates/tab-chats.html',
+          controller: 'ChatsCtrl'
+        }
+      }
+    })
+    .state('tab.detalles', {
+      url: '/detalles',
+      views: {
+        'tab-detalles': {
+          templateUrl: 'templates/detalles.html',
+          controller: 'controlDetalles'
+        }
+      }
+    })
+
+  .state('tab.account', {
+    url: '/account',
+    views: {
+      'tab-account': {
+        templateUrl: 'templates/tab-account.html',
+        controller: 'ControladorLinterna'
+      }
     }
   })
 

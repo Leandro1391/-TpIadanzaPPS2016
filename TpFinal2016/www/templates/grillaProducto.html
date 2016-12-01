@@ -17,9 +17,15 @@
           <input type="search" placeholder="Buscar producto" ng-model="mifiltro"></input>
 
         </label>
+
+        <label class="item-input">
+            
+          <button class="button button-block button-positive" ng-click="scanBarCode()">escanear</button>
+
+        </label>
         
         
-        <div class="row" on-touch="onTouch(producto)" ng-repeat="producto in ListadoProductos | filter:mifiltro as resultado">
+        <div class="row" on-hold="onTouch(producto)" ng-repeat="producto in ListadoProductos | filter:mifiltro as resultado">
           <div class="col"><img class='fotoGrilla' ng-src="imagenes/{{producto.foto}}"></div>
           <div class="col">{{producto.nombre}}</div>
           <div class="col">${{producto.precio}}</div>
