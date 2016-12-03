@@ -4,7 +4,7 @@
 		
 		<div class="list">
   			<label class="item item-input">
-    			<input type="text" placeholder="Nombre" ng-model="producto.nombre" >
+    			<input type="text" placeholder="Nombre" ng-model="producto.nombre">
   			</label>
 		  	<label class="item item-input">
 		    	<input type="text" placeholder="Local" ng-model="producto.local">
@@ -18,10 +18,17 @@
 		  	<label class="item item-input">
 		    	<input type="text" placeholder="Precio" ng-model="producto.precio"></input>
 		  	</label>
-		  	<label class="item item-input">
-		    	<input type="text" placeholder="Código" ng-model="producto.codbar"></input>
-		  	</label>
-		    	<button class="button button-calm" ng-click="scanBarCode()">Scan Bar</button>
+
+		  	<label class="item item-divider">
+			    <span class="input-label">Código de Barras</span>
+			</label>
+
+		  	<div class="col">
+		    	<div class="col text-center">
+		    	<input type="text" placeholder="Código" ng-model="producto.codbar" on-touch="onTouch()"></input>
+		    	<button class="button button-calm" ng-click="scanBarCode()">Escanear</button>
+		    	</div>
+		  	</div>
 		  	
 		  	<label class="item item-input">
 		    	<input type="text" placeholder="Fecha" ng-model="producto.fecha" ng-disabled="true"></input>

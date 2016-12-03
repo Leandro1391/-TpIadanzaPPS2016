@@ -5,16 +5,17 @@
 
         
         </p>
-        <a class="button button-halfwidth" nav-clear ui-sref="Menu.inicio">Menú inicio</a>
-        <a class="button button-halfwidth pull right" nav-clear ui-sref="tab.dash">tabs</a>
+        <a class="button button-full button-assertive" nav-clear ui-sref="Menu2.grillaUsuario" ng-if="esVisible.admin">Menú Admin</a>
+        <!-- <a class="button button-halfwidth pull right" nav-clear ui-sref="tab.dash" ng-if="esVisible.admin">tabs</a> -->
+        <a class="button button-full button-positive" nav-clear ui-sref="Menu.grillaProducto">Menú Inicio</a>
 
         <!-- <iframe src="http://www.w3schools.com">
 		  <p>Your browser does not support iframes.</p>
 		</iframe> -->
 
-		<!-- <iframe height="{{datos.pantallaAlto}}" width="{{datos.pantallaAncho}}" src="http://www.lanacion.com.ar/">
+		<iframe height="{{datos.pantallaAlto}}" width="{{datos.pantallaAncho}}" src="http://www.lanacion.com.ar/">
 		  <p>Your browser does not support iframes.</p>
-		</iframe> -->
+		</iframe>
 
 
       </ion-content>

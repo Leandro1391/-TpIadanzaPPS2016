@@ -1,12 +1,7 @@
-<ion-view view-title="Chats">
+<ion-view view-title={{titulo}}>
 
-  <ion-nav-buttons side="left">
-
-        <button ui-sref="root" class="button button-icon icon ">root</button>
-
-  </ion-nav-buttons>
   <ion-content>
-     <div class="row">
+     <div class="row header">
   <div class="col"></div>
   <div class="col">Requerimiento</div>
   <div class="col">Su Celular</div> 
@@ -31,5 +26,10 @@
   <div class="col">5.0.1</div>
   <div class="col"> {{version}}</div> 
     </div>
+
+    <button class="button button-block button-assertive" ui-sref="Menu.plugins" ng-if="esVisible.cliente || esVisible.empleado">
+    Ver Plugins
+  </button>
+  <button class="button button-block button-assertive" ui-sref="Menu2.plugins" ng-if="esVisible.admin">Ver Plugins</button>
   </ion-content>
 </ion-view>

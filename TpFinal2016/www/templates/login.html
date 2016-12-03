@@ -1,5 +1,5 @@
 <ion-modal-view>
-  <ion-header-bar>
+  <ion-header-bar class="bar bar-header bar-dark">
     <h1 class="title">{{DatoTest}}</h1>
     <!-- <div class="buttons">
       <button class="button button-clear" ng-click="closeLogin()">Close</button>
@@ -16,9 +16,9 @@
           <span class="input-label">Password</span>
           <input type="password" ng-model="clave" id="txtClave">
         </label>
-            <button class="button button-large" name="empleado" ng-click="cargarEmpleado()">Empleado</button>
-            <button class="button button-large" name="Cliente" ng-click="cargarCliente()">Cliente</button>
-            <button class="button button-large" name="administrador" ng-click="cargarAdmin()">Admin</button>
+            <button class="button button-large button-energized" name="empleado" ng-click="cargarEmpleado()">Empleado</button>
+            <button class="button button-large button-balanced" name="Cliente" ng-click="cargarCliente()">Cliente</button>
+            <button class="button button-large button-assertive" name="administrador" ng-click="cargarAdmin()">Admin</button>
         
           <button class="button button-block button-positive" ng-click="Login(nombre, clave)" type="submit">Log in</button>
       </div>

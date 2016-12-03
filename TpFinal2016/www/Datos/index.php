@@ -58,14 +58,12 @@ $app->get('/productos[/]', function ($request, $response, $args) {
 	
 	$listado = producto::TraerTodosLosproductos();
 	return json_encode($listado);
-	var_dump($listado);
 });
 
 $app->get('/productos/{id}', function ($request, $response, $args) {
 	
 	$unProducto = producto::TraerUnProducto($args['id']);
 	return json_encode($unProducto);
-	var_dump($unProducto);
 });
 
 
@@ -73,26 +71,20 @@ $app->delete('/productos/{id}', function ($request, $response, $args) {
 	
 	$listado=producto::BorrarProducto($args['id']);
    $response->write(json_decode($listado)); 
-    return $response;
 });
 
 $app->post('/productos', function ($request,$args) {
 
-	echo "estoy en index alta php";
-
 	$datos=json_decode($request->getBody());
-	var_dump($datos);
 	producto::InsertarProducto($datos);
 	
 });
 
 $app->put('/productos',function($request){
-	echo "estoy index modificar.php";
 	$unproducto=json_decode($request->getBody());
 	//$unUsuario->id_usuario=$id;
 	producto::ModificarProducto($unproducto);
 	
-	var_dump($unproducto);
 
 });
 
@@ -102,7 +94,6 @@ $app->get('/usuarios[/]', function ($request, $response, $args) {
 	
 	$listado = usuario::TraerTodosLosUsuarios();
 	return json_encode($listado);
-	var_dump($listado);
    
 });
 
@@ -110,7 +101,6 @@ $app->get('/usuarios/{id}', function ($request, $response, $args) {
 	
 	$user = usuario::TraerUnUsuario($args['id']);
     return json_encode($user);
-	var_dump($user);
 });
 
 $app->delete('/usuarios/{id}', function ($request, $response, $args) {
@@ -121,20 +111,14 @@ $app->delete('/usuarios/{id}', function ($request, $response, $args) {
 });
 
 $app->post('/usuarios', function ($request,$args) {
-	echo "estoy en index alta php";
 	$datos=json_decode($request->getBody());
-
-	var_dump($datos);
 	usuario::InsertarUsuario($datos);
 });
 
 $app->put('/usuarios',function($request){
-	echo "estoy index modificar.php";
 	$unsuario=json_decode($request->getBody());
 	//$unUsuario->id_usuario=$id;
 	usuario::ModificarUsuario($unsuario);
-	
-	var_dump($unusuario);
 
 });
 
@@ -145,7 +129,6 @@ $app->get('/informes[/]', function ($request, $response, $args) {
 	
 	$listado = informe::TraerTodosLosInformes();
 	return json_encode($listado);
-	var_dump($listado);
    
 });
 
@@ -153,7 +136,6 @@ $app->get('/informes/{id}', function ($request, $response, $args) {
 	
 	$user = informe::TraerUnInforme($args['id']);
     return json_encode($user);
-	var_dump($user);
 });
 
 $app->delete('/informes/{id}', function ($request, $response, $args) {
@@ -164,20 +146,14 @@ $app->delete('/informes/{id}', function ($request, $response, $args) {
 });
 
 $app->post('/informes', function ($request,$args) {
-	echo "estoy en index alta php";
 	$datos=json_decode($request->getBody());
-
-	var_dump($datos);
 	informe::InsertarInforme($datos);
 });
 
 $app->put('/informes',function($request){
-	echo "estoy index modificar.php";
 	$uninforme=json_decode($request->getBody());
 	//$uninforme->id_informe=$id;
 	informe::ModificarInforme($uninforme);
-	
-	var_dump($uninforme);
 
 });
 

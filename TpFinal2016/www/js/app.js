@@ -46,6 +46,12 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'satelli
         controller: 'controlLogin'
   })
 
+  .state('Menu2', {
+     url : '/Menu2',
+        templateUrl : 'templates/menuAbst2.html',
+        abstract : true
+    })
+
   .state('Menu', {
      url : '/Menu',
         templateUrl : 'templates/menuAbst.html',
@@ -64,12 +70,52 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'satelli
   })
 
 
-  .state('Menu.grillaUsuario', {
+  .state('Menu2.grillaUsuario', {
         url: '/grillaUsuario',
         views: {
             'contenido': {
              templateUrl: 'templates/grillaUsuario.html',
              controller: 'controlGrillaUsuario'
+            }
+        }
+    })
+
+  .state('Menu2.detalles', {
+        url: '/detalles',
+        views: {
+            'contenido': {
+             templateUrl: 'templates/documentacion.html',
+             controller: 'controlDetalles'
+            }
+        }
+    })
+
+  .state('Menu2.plugins', {
+        url: '/plugins',
+        views: {
+            'contenido': {
+             templateUrl: 'templates/docPlugin.html'
+             // controller: 'controlDetalles'
+            }
+        }
+    })
+
+  .state('Menu.plugins', {
+        url: '/plugins',
+        views: {
+            'contenido': {
+             templateUrl: 'templates/docPlugin.html'
+             // controller: 'controlDetalles'
+            }
+        }
+    })
+
+  .state('Menu.detalles', {
+        url: '/detalles',
+        views: {
+            'contenido': {
+             templateUrl: 'templates/documentacion.html',
+             controller: 'controlDetalles'
             }
         }
     })
@@ -84,7 +130,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'satelli
         }
     })
 
-  .state('Menu.altaUsuario', {
+  .state('Menu2.altaUsuario', {
         url: '/altaUsuario',
         views: {
             'contenido': {
@@ -172,52 +218,52 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'satelli
     })
 
   // setup an abstract state for the tabs directive
-    .state('tab', {
-    url: '/tab',
-    abstract: true,
-    templateUrl: 'templates/tabs.html'
-  })
+  //   .state('tab', {
+  //   url: '/tab',
+  //   abstract: true,
+  //   templateUrl: 'templates/tabs.html'
+  // })
 
-  // Each tab has its own nav history stack:
+  // // Each tab has its own nav history stack:
 
-  .state('tab.dash', {
-    url: '/dash',
-    views: {
-      'tab-dash': {
-        templateUrl: 'templates/tab-dash.html',
-        controller: 'DashCtrl'
-      }
-    }
-  })
+  // .state('tab.dash', {
+  //   url: '/dash',
+  //   views: {
+  //     'tab-dash': {
+  //       templateUrl: 'templates/tab-dash.html',
+  //       controller: 'DashCtrl'
+  //     }
+  //   }
+  // })
 
-  .state('tab.chats', {
-      url: '/chats',
-      views: {
-        'tab-chats': {
-          templateUrl: 'templates/tab-chats.html',
-          controller: 'ChatsCtrl'
-        }
-      }
-    })
-    .state('tab.detalles', {
-      url: '/detalles',
-      views: {
-        'tab-detalles': {
-          templateUrl: 'templates/detalles.html',
-          controller: 'controlDetalles'
-        }
-      }
-    })
+  // .state('tab.chats', {
+  //     url: '/chats',
+  //     views: {
+  //       'tab-chats': {
+  //         templateUrl: 'templates/tab-chats.html',
+  //         controller: 'ChatsCtrl'
+  //       }
+  //     }
+  //   })
+  //   .state('tab.detalles', {
+  //     url: '/detalles',
+  //     views: {
+  //       'tab-detalles': {
+  //         templateUrl: 'templates/detalles.html',
+  //         controller: 'controlDetalles'
+  //       }
+  //     }
+  //   })
 
-  .state('tab.account', {
-    url: '/account',
-    views: {
-      'tab-account': {
-        templateUrl: 'templates/tab-account.html',
-        controller: 'ControladorLinterna'
-      }
-    }
-  })
+  // .state('tab.account', {
+  //   url: '/account',
+  //   views: {
+  //     'tab-account': {
+  //       templateUrl: 'templates/tab-account.html',
+  //       controller: 'ControladorLinterna'
+  //     }
+  //   }
+  // })
 
     .state('app', {
     url: '/app',

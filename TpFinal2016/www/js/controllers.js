@@ -1,3 +1,4 @@
+
 angular.module('starter.controllers', ['ngCordova'])
 
 .controller('AppCtrl', function($scope, $ionicModal, $timeout) {
@@ -57,7 +58,7 @@ angular.module('starter.controllers', ['ngCordova'])
 ///////////////////CONTROLLER DEL MENÚ///////////////
 /////////////////////////////////////////////////////
 
-.controller('controlLogin', function($scope, $http, $auth, $state, $ionicPopup) {
+.controller('controlLogin', function($scope, $http, $auth, $state, $ionicPopup, $cordovaToast) {
   
   $scope.DatoTest="INICIAR SESIÓN";
 
@@ -102,7 +103,12 @@ angular.module('starter.controllers', ['ngCordova'])
         console.log(respuesta);
         if($auth.isAuthenticated())
         {
-          console.info($auth.isAuthenticated(), $auth.getPayload());
+          // console.info($auth.isAuthenticated(), $auth.getPayload());
+          $cordovaToast.show('Bienvenido '+$auth.getPayload().nombre, 'short', 'bottom').then(function(success) {
+            // success
+            }, function (error) {
+              alert("hay un error: "+error);
+          });
           $state.go("raiz");
         }
         else
@@ -128,11 +134,37 @@ angular.module('starter.controllers', ['ngCordova'])
 
 .controller('RootPageController', function($scope, $ionicSideMenuDelegate, $auth, $state, $window) {
 
-    $scope.datos = {};
+    if($auth.isAuthenticated()){
 
-    $scope.datos.pantallaAlto = $window.innerHeight;
+      // $cordovaToast.show('Bienvenido', 'short', 'bottom').then(function(success){
+      //   console.log("funcionando");
+      // }, function(error) {
+      //   alert("hay un error: "+error);
+      // });
 
-    $scope.datos.pantallaAncho = $window.innerWidth;
+
+      $scope.datos = {};
+
+      $scope.datos.pantallaAlto = $window.innerHeight;
+
+      $scope.datos.pantallaAncho = $window.innerWidth;
+
+      $scope.esVisible={
+        admin:false,
+        empleado:false,
+        cliente:false
+    };
+
+    if($auth.getPayload().tipo=="administrador")
+      $scope.esVisible.admin=true;
+    if($auth.getPayload().tipo=="empleado")
+      $scope.esVisible.empleado=true;
+    if($auth.getPayload().tipo=="cliente")
+      $scope.esVisible.cliente=true;
+
+    }else
+      $state.go("login");
+
 
 })
 
@@ -149,9 +181,26 @@ angular.module('starter.controllers', ['ngCordova'])
 
 })
 
-.controller('controlDetalles', function($scope, $cordovaDevice, $ionicPlatform){
+.controller('controlDetalles', function($scope, $cordovaDevice, $ionicPlatform, $state, $auth){
 
-  $ionicPlatform.ready(function () {
+  if($auth.isAuthenticated()){
+
+
+    $scope.esVisible={
+        admin:false,
+        empleado:false,
+        cliente:false
+    };
+
+    if($auth.getPayload().tipo=="administrador")
+      $scope.esVisible.admin=true;
+    if($auth.getPayload().tipo=="empleado")
+      $scope.esVisible.empleado=true;
+    if($auth.getPayload().tipo=="cliente")
+      $scope.esVisible.cliente=true;
+
+    $ionicPlatform.ready(function () {
+      $scope.titulo = "Detalles"
 
     //   function mostrar_objeto(obj){
     //   for (var propiedad in obj) {
@@ -179,15 +228,25 @@ angular.module('starter.controllers', ['ngCordova'])
 
   }, false);
 
+  }else
+    $state.go("login"); 
+
 })
 
-.controller('controlMapa', function($scope, $auth, $state, $cordovaGeolocation, $ionicPlatform, $stateParams, $cordovaVibration, $ionicPopup){
+.controller('controlMapa', function($scope, $auth, $state, $cordovaGeolocation, $ionicPlatform, $stateParams, $cordovaVibration, $ionicPopup, $cordovaNativeAudio){
 
   if($auth.isAuthenticated()){
 
       $scope.DatoTest="Ubicación";
    
       // alert("estoy en el mapa de google");
+      $cordovaNativeAudio
+    .preloadSimple('wolfenstein', 'audio/dskeendt.wav')
+    .then(function (msg) {
+      console.log(msg);
+    }, function (error) {
+      // alert(error);
+      });
 
       $scope.$on('$ionicView.beforeEnter', function(){
 
@@ -274,6 +333,7 @@ angular.module('starter.controllers', ['ngCordova'])
                 var a = parseFloat(numero);
                 if (a < 0.1 || a == 0.1) {
                     $cordovaVibration.vibrate(1000);
+                    $cordovaNativeAudio.play('wolfenstein');
                     $ionicPopup.alert({
                       title: 'Aviso!!',
                       template: 'Se encuentra a menos de 100 mts del local'
@@ -366,7 +426,7 @@ angular.module('starter.controllers', ['ngCordova'])
  })
 
 
-.controller('controlAltaProducto', function($scope, $http, $sce ,$state, $auth, FileUploader, $ionicPlatform, $cordovaCamera, $ionicPopup, $cordovaFileTransfer, $cordovaBarcodeScanner) {
+.controller('controlAltaProducto', function($scope, $http, $sce ,$state, $auth, FileUploader, $cordovaToast, $ionicPlatform, $cordovaCamera, $ionicPopup, $cordovaFileTransfer, $cordovaBarcodeScanner) {
 
   if($auth.isAuthenticated())
   {
@@ -376,6 +436,15 @@ angular.module('starter.controllers', ['ngCordova'])
       'Content-Type': 'application/json',
       'Accept': 'application/json'
     };
+
+     $scope.onTouch=function(){
+        $cordovaToast.show('Solamente se puede ingresar números', 'short', 'center')
+        .then(function(success) {
+          // success
+        }, function (error) {
+          alert("hay un error: "+error);
+        });
+     }
 
     $http.defaults.headers.post = defaultHTTPHeaders;
 
@@ -418,7 +487,6 @@ angular.module('starter.controllers', ['ngCordova'])
     });
 
     $ionicPlatform.ready(function() {
-        $scope.enabled=true;
 
         $scope.upload = function() {
 
@@ -528,7 +596,7 @@ angular.module('starter.controllers', ['ngCordova'])
                                //aca se ejetuca si retorno sin errores        
                                console.log(respuesta.data);
                                // alert("se guardó el producto");
-                               $state.go("Menu.inicio");
+                               $state.go("Menu.grillaProducto");
 
                           },function errorCallback(response) {        
                               //aca se ejecuta cuando hay errores
@@ -715,7 +783,7 @@ angular.module('starter.controllers', ['ngCordova'])
 
 })
 
-.controller('controlModificarProducto', function($scope, $http, $state, $stateParams, FileUploader, $auth, $ionicPopup, $ionicPlatform, $cordovaBarcodeScanner){
+.controller('controlModificarProducto', function($scope, $http, $state, $stateParams, FileUploader, $auth, $ionicPopup, $ionicPlatform, $cordovaBarcodeScanner, $cordovaToast){
 
     if ($auth.isAuthenticated()) {
       $scope.DatoTest="Modificar Producto";
@@ -731,6 +799,15 @@ angular.module('starter.controllers', ['ngCordova'])
         foto:$stateParams.foto,
         fecha:$stateParams.fecha
       }
+
+      $scope.onTouch=function(){
+        $cordovaToast.show('Solamente se puede ingresar números', 'short', 'center')
+        .then(function(success) {
+          // success
+        }, function (error) {
+          alert("hay un error: "+error);
+        });
+     }
 
       $ionicPlatform.ready(function() {
 
@@ -790,7 +867,7 @@ angular.module('starter.controllers', ['ngCordova'])
 
 })
 
-.controller('controlModificacion', function($scope, $http, $state, $stateParams, FileUploader, $auth, $ionicPopup)
+.controller('controlModificacion', function($scope, $http, $state, $stateParams, FileUploader, $auth, $ionicPopup, $cordovaToast)
 {
 
   if($auth.isAuthenticated())
@@ -805,6 +882,24 @@ angular.module('starter.controllers', ['ngCordova'])
   $scope.usuario.clave=$stateParams.clave;
   $scope.usuario.tipo=$stateParams.tipo;
   $scope.usuario.foto=$stateParams.foto;
+
+  $scope.onTouchChar=function(){
+          $cordovaToast.show('Ingresar caracteres, como mínimo 3 y máximo 8', 'short', 'center')
+          .then(function(success) {
+            // success
+          }, function (error) {
+            alert("hay un error: "+error);
+          });
+        }
+
+        $scope.onTouch=function(){
+        $cordovaToast.show('Ingresar caracteres alfanuméricos, Mínimo 3 y máximo 12', 'short', 'center')
+        .then(function(success) {
+          // success
+        }, function (error) {
+          alert("hay un error: "+error);
+        });
+     }
 
 
 
@@ -824,7 +919,7 @@ angular.module('starter.controllers', ['ngCordova'])
                           .then(function(respuesta) {       
                                //aca se ejetuca si retorno sin errores        
                                console.log(respuesta.data);
-                               $state.go("Menu.grillaUsuario");
+                               $state.go("Menu2.grillaUsuario");
 
                           },function errorCallback(response) {        
                               //aca se ejecuta cuando hay errores
@@ -851,6 +946,19 @@ angular.module('starter.controllers', ['ngCordova'])
   if($auth.isAuthenticated()){
 
       $scope.DatoTest="Grilla Usuario";
+
+      $scope.esVisible={
+        admin:false,
+        empleado:false,
+        cliente:false
+    };
+
+    if($auth.getPayload().tipo=="administrador")
+      $scope.esVisible.admin=true;
+    if($auth.getPayload().tipo=="empleado")
+      $scope.esVisible.empleado=true;
+    if($auth.getPayload().tipo=="cliente")
+      $scope.esVisible.cliente=true;
 
 
     $scope.$on('$ionicView.beforeEnter', function(){
@@ -931,7 +1039,7 @@ angular.module('starter.controllers', ['ngCordova'])
 })
 
 
-.controller('controlAltaUsuario', function($scope, $http ,$state, FileUploader, cargadoDeFoto, $auth, $ionicPopup) {
+.controller('controlAltaUsuario', function($scope, $http ,$state, FileUploader, cargadoDeFoto, $auth, $ionicPopup, $cordovaToast, $cordovaCamera, $ionicPlatform) {
 
   if($auth.isAuthenticated())
   {
@@ -947,6 +1055,68 @@ angular.module('starter.controllers', ['ngCordova'])
         $scope.usuario.clave= "9876" ;
         $scope.usuario.tipo= "empleado" ;
         $scope.usuario.foto="pordefecto.png";
+
+        $ionicPlatform.ready(function() {
+
+            $scope.upload = function() {
+
+                var options = {
+                quality: 50,
+                destinationType: Camera.DestinationType.FILE_URI,
+                sourceType: Camera.PictureSourceType.CAMERA,
+                allowEdit: false,
+                encodingType: Camera.EncodingType.JPEG,
+                targetWidth: 100,
+                targetHeight: 100,
+                popoverOptions: CameraPopoverOptions,
+                saveToPhotoAlbum: false,
+                cameraDirection:0,
+                correctOrientation:true
+            };
+
+                $cordovaCamera.getPicture(options).then(function(imageData){
+                    $scope.usuario.foto = imageData;
+                    // alert("nombre de la foto: " + $scope.producto.foto);
+                }, function(error){
+                    $ionicPopup.alert({
+                title: 'Error',
+                template: 'error al sincronizar: '+error
+                 });
+
+            });
+
+
+
+            // $cordovaFileTransfer.upload("http://elmejorprecio.esy.es/imagenes", imageData, options).then(function(result) {
+            //     console.log("SUCCESS: " + JSON.stringify(result.response));
+            //   }, function(err) {
+            //     console.log("ERROR: " + JSON.stringify(err));
+            //   }, function (progress) {
+            //     // constant progress updates
+            // });
+
+        }
+
+        });
+
+
+        $scope.onTouchChar=function(){
+          $cordovaToast.show('Ingresar caracteres, como mínimo 3 y máximo 8', 'short', 'center')
+          .then(function(success) {
+            // success
+          }, function (error) {
+            alert("hay un error: "+error);
+          });
+        }
+
+        $scope.onTouch=function(){
+        $cordovaToast.show('Ingresar caracteres alfanuméricos, Mínimo 3 y máximo 12', 'short', 'center')
+        .then(function(success) {
+          // success
+        }, function (error) {
+          alert("hay un error: "+error);
+        });
+     }
         
         // cargadoDeFoto.CargarFoto($scope.usuario.foto,$scope.uploader);
        
@@ -967,7 +1137,7 @@ angular.module('starter.controllers', ['ngCordova'])
                           .then(function(respuesta) {       
                                //aca se ejetuca si retorno sin errores        
                                console.log(respuesta.data);
-                               $state.go("Menu.inicio");
+                               $state.go("Menu2.grillaUsuario");
 
                           },function errorCallback(response) {        
                               //aca se ejecuta cuando hay errores
